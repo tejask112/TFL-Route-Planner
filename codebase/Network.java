@@ -18,10 +18,6 @@ public class Network {
     }
   }
 
-  private final Map<String, List<Edge>> tflNetwork;
-
-
-
 
 
 }
