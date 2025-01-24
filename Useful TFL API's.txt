@@ -1,0 +1,3 @@
+Get disruptions for the given line ids  <- returns the distruptions for each line (eg, Piccadilly, Metropolitan etc)
+
+Get the list of arrival predictions for given line ids based at the given stop <- returns the time for the next train to arrive to the station of particular train line (eg piccadilly, metropolitan etc)
