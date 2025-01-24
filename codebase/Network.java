@@ -1,5 +1,7 @@
 package codebase;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +20,24 @@ public class Network {
     }
   }
 
+  public static Map<String, List<Edge>> tflNetwork;
 
+  // initialises the tfl network graph
+  public Network () {
+    tflNetwork = new HashMap<>();
+  }
+
+  // Add a new node (ie station) to the tfl network
+  public void addStation(String stationName){
+    tflNetwork.put(stationName, new ArrayList<>());
+  }
+
+  // Adds a connection between two stations
+  public void addEdge(String src, String dest, String line, int travelTime) {
+    tflNetwork.put(src, new ArrayList<>());
+    tflNetwork.put(dest, new ArrayList<>());
+    tflNetwork.get(src).add(new Edge(dest, line, travelTime));
+    tflNetwork.get(dest).add(new Edge(src, line, travelTime));
+  }
 
 }
