@@ -40,4 +40,9 @@ public class Network {
     tflNetwork.get(dest).add(new Edge(src, line, travelTime));
   }
 
+  public void removeEdge(String src, String dest) {
+    tflNetwork.get(src).remove(dest);
+    tflNetwork.get(dest).remove(src);
+  }
+
 }
