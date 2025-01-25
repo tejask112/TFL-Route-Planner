@@ -48,15 +48,21 @@ public class Network {
     tflNetwork.get(dest).add(new Edge(src, line, travelTime));
   }
 
+  //removes a station from the tfl network (used when there is part closure)
   public void removeStation(Station stationToRemove){
-    List<Edge> connections = this.tflNetwork.get(stationToRemove);
+    if (!tflNetwork.containsKey(stationToRemove)) return;
+    List<Edge> connections = tflNetwork.get(stationToRemove);
     for (Edge connection : connections) {
       Station stationName = connection.getDestination();
-      for (Edge edge : connections) {
-        if (edge.getDestination().equals(stationName)) {
-          tflNetwork.get(stationName).remove(edge);
-          break;
+      List<Edge> neighbourEdges = tflNetwork.get(stationName);
+      if(neighbourEdges != null) {
+        List<Edge> edgesToRemove = new ArrayList<>();
+        for (Edge edge : neighbourEdges) {
+          if (edge.getDestination().equals(stationToRemove)) {
+            edgesToRemove.add(edge);
+          }
         }
+        neighbourEdges.removeAll(edgesToRemove);
       }
     }
     tflNetwork.remove(stationToRemove);
