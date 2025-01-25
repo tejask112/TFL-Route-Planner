@@ -6,9 +6,27 @@ public class Main {
 
     Network tflNetwork = new Network();
 
-    tflNetwork.addStation("Rayners Lane");
-    tflNetwork.addStation("Harrow-On-The-Hill");
-    tflNetwork.addEdge("Rayners Lane", "Harrow-On-The-Hill", "Metropolitan", 4);
+    Station BondStreet = new Station("Bond Street");
+    Station OxfordCircus = new Station("Oxford Circus");
+    Station GreenPark = new Station("Green Park");
+
+    // Add stations
+    tflNetwork.addStation(OxfordCircus);
+    tflNetwork.addStation(BondStreet);
+    tflNetwork.addStation(GreenPark);
+
+    // Add connections
+    tflNetwork.addEdge(OxfordCircus, BondStreet, "Central Line", 2);
+    tflNetwork.addEdge(OxfordCircus, GreenPark, "Victoria Line", 3);
+    tflNetwork.addEdge(BondStreet, GreenPark, "Jubilee Line", 2);
+
+    System.out.println(tflNetwork.getTflNetwork());
+
+    System.out.println("///////////////////////////////////////////////////////////////////");
+
+    tflNetwork.removeStation(GreenPark);
+
+    System.out.println(tflNetwork.getTflNetwork());
 
   }
 

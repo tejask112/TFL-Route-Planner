@@ -18,6 +18,14 @@ public class Network {
       this.line = nLine;
       this.travelTime = nTravelTime;
     }
+
+    public Station getDestination() {
+      return destination;
+    }
+
+    public String toString(){
+      return destination + " (" + line + ", " + travelTime + "mins)";
+    }
   }
 
   private final Map<Station, List<Edge>> tflNetwork;
@@ -40,9 +48,22 @@ public class Network {
     tflNetwork.get(dest).add(new Edge(src, line, travelTime));
   }
 
+  public void removeStation(Station stationToRemove){
+    List<Edge> connections = this.tflNetwork.get(stationToRemove);
+    for (Edge connection : connections) {
+      Station stationName = connection.getDestination();
+      for (Edge edge : connections) {
+        if (edge.getDestination().equals(stationName)) {
+          tflNetwork.get(stationName).remove(edge);
+          break;
+        }
+      }
+    }
+    tflNetwork.remove(stationToRemove);
+  }
+
   public List<Edge> getStation(Station station) {
-    List<Edge> connection = tflNetwork.get(station);
-    return connection;
+    return tflNetwork.get(station);
   }
 
   public Map<Station, List<Edge>> getTflNetwork(){

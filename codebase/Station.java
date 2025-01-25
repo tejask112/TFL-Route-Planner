@@ -8,4 +8,8 @@ public class Station {
     name = stationName;
   }
 
+  public String toString(){
+    return name;
+  }
+
 }
