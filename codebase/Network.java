@@ -12,11 +12,15 @@ public class Network {
     Station destination;
     String line;
     int travelTime;
+    String departingPlatform;
+    String arrivalPlatform;
 
-    Edge(Station nDestination, String nLine, int nTravelTime) {
+    Edge(Station nDestination, String nLine, int nTravelTime, String departingPlatform, String arrivalPlatform) {
       this.destination = nDestination;
       this.line = nLine;
       this.travelTime = nTravelTime;
+      this.departingPlatform = departingPlatform;
+      this.arrivalPlatform = arrivalPlatform;
     }
 
     public Station getDestination() {
@@ -41,11 +45,9 @@ public class Network {
   }
 
   // Adds a connection between two stations
-  public void addEdge(Station src, Station dest, String line, int travelTime) {
+  public void addEdge(Station src, Station dest, String line, int travelTime, String departingPlatform, String arrivingPlatform) {
     tflNetwork.putIfAbsent(src, new ArrayList<>());
-    tflNetwork.putIfAbsent(dest, new ArrayList<>());
-    tflNetwork.get(src).add(new Edge(dest, line, travelTime));
-    tflNetwork.get(dest).add(new Edge(src, line, travelTime));
+    tflNetwork.get(src).add(new Edge(dest, line, travelTime, departingPlatform, arrivingPlatform));
   }
 
   //removes a station from the tfl network (used when there is part closure)
