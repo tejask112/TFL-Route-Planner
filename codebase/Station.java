@@ -1,13 +1,12 @@
 package codebase;
-
 import java.util.ArrayList;
 
 public class Station {
 
-  private String name;
-  private ArrayList<Line> lines;
-  private Boolean lift;
-  private Integer zone;
+  private final String name;
+  private final ArrayList<Line> lines;
+  private final Boolean lift;
+  private final Integer zone;
 
 
   public Station (String nStationName, ArrayList<Line> nLines, Boolean nLift, Integer nZone){
@@ -20,5 +19,4 @@ public class Station {
   public String toString(){
     return name;
   }
-
 }

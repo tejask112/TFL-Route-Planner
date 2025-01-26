@@ -10,12 +10,12 @@ public class Network {
   // Represents an edge (connection) between two stations, the line connecting them and the travel time
   static class Edge {
     Station destination;
-    String line;
+    Line line;
     int travelTime;
     String departingPlatform;
     String arrivalPlatform;
 
-    Edge(Station nDestination, String nLine, int nTravelTime, String departingPlatform, String arrivalPlatform) {
+    Edge(Station nDestination, Line nLine, int nTravelTime, String departingPlatform, String arrivalPlatform) {
       this.destination = nDestination;
       this.line = nLine;
       this.travelTime = nTravelTime;
@@ -28,7 +28,7 @@ public class Network {
     }
 
     public String toString(){
-      return destination + " (" + line + ", " + travelTime + "mins)";
+      return destination + " (" + line + ", " + travelTime + "mins, " + "Departure: "+departingPlatform + ", Arrival: "+arrivalPlatform;
     }
   }
 
@@ -39,13 +39,15 @@ public class Network {
     this.tflNetwork = new HashMap<>();
   }
 
-  // Add a new node (ie station) to the tfl network
-  public void addStation(Station stationName){
-    tflNetwork.putIfAbsent(stationName, new ArrayList<>());
+  // Add a list of new nodes (ie station) to the tfl network
+  public void addStation(ArrayList<Station> stations){
+    for (Station stationName : stations){
+      tflNetwork.putIfAbsent(stationName, new ArrayList<>());
+    }
   }
 
   // Adds a connection between two stations
-  public void addEdge(Station src, Station dest, String line, int travelTime, String departingPlatform, String arrivingPlatform) {
+  public void addEdge(Station src, Station dest, Line line, int travelTime, String departingPlatform, String arrivingPlatform) {
     tflNetwork.putIfAbsent(src, new ArrayList<>());
     tflNetwork.get(src).add(new Edge(dest, line, travelTime, departingPlatform, arrivingPlatform));
   }
@@ -77,5 +79,4 @@ public class Network {
   public Map<Station, List<Edge>> getTflNetwork(){
     return this.tflNetwork;
   }
-
 }
