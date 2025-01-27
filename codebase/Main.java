@@ -95,7 +95,7 @@ public class Main {
     tflNetwork.addEdge(LiverpoolStreet, Aldgate, Metropolitan, 2, "Platform 1", "Platform 2");
     tflNetwork.addEdge(Aldgate, LiverpoolStreet, Metropolitan, 2, "Platform 1", "Platform 2");
 
-    System.out.println(tflNetwork.findRoute(HarrowOnTheHill, EustonSquare));
+    System.out.println(tflNetwork.findRoute(HarrowOnTheHill, Chesham));
 
   }
 

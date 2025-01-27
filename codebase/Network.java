@@ -92,11 +92,11 @@ public class Network {
     Map<Station, Integer> distanceLog = new HashMap<>();
     Map<Station, Edge> predecessorEdges = new HashMap<>();
     PriorityQueue<Station> queue = new PriorityQueue<>(Comparator.comparingInt(distanceLog::get));
-    distanceLog.put(src, 0); //initialise distance to source node as 0
-    queue.add(src);  //add the source node to the priority queue
     for (Station station : tflNetwork.keySet()){
       distanceLog.put(station, Integer.MAX_VALUE);  //set distance to all other nodes as infinity
     }
+    distanceLog.put(src, 0); //initialise distance to source node as 0
+    queue.add(src);  //add the source node to the priority queue
 
     while (!queue.isEmpty()) {
       Station currentStation = queue.poll();
@@ -110,7 +110,8 @@ public class Network {
         Integer newDistance = distanceLog.get(currentStation) + edge.getDistance();
         if (newDistance < distanceLog.get(edge.getDestination())) {
           distanceLog.put(edge.getDestination(), newDistance);
-          queue.add((edge.getDestination()));
+          queue.remove(edge.getDestination());
+          queue.add(edge.getDestination());
           predecessorEdges.put(edge.getDestination(), edge);
         }
       }
