@@ -1,9 +1,12 @@
 package codebase;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 
 public class Network {
 
@@ -12,14 +15,14 @@ public class Network {
     Station destination;
     Line line;
     int travelTime;
-    String departingPlatform;
+    String departurePlatform;
     String arrivalPlatform;
 
     Edge(Station nDestination, Line nLine, int nTravelTime, String departingPlatform, String arrivalPlatform) {
       this.destination = nDestination;
       this.line = nLine;
       this.travelTime = nTravelTime;
-      this.departingPlatform = departingPlatform;
+      this.departurePlatform = departingPlatform;
       this.arrivalPlatform = arrivalPlatform;
     }
 
@@ -27,8 +30,12 @@ public class Network {
       return destination;
     }
 
+    public Integer getDistance() {
+      return travelTime;
+    }
+
     public String toString(){
-      return destination + " (" + line + ", " + travelTime + "mins, " + "Departure: "+departingPlatform + ", Arrival: "+arrivalPlatform;
+      return destination + " (" + line + ", " + travelTime + "mins, " + "Departure: "+departurePlatform + ", Arrival: "+arrivalPlatform + ")";
     }
   }
 
@@ -79,4 +86,61 @@ public class Network {
   public Map<Station, List<Edge>> getTflNetwork(){
     return this.tflNetwork;
   }
+
+  // Runs Dijkstra's algorithm between two stations to find the shortest route
+  public LinkedList<Edge> findRoute(Station src, Station dest) {
+    Map<Station, Integer> distanceLog = new HashMap<>();
+    Map<Station, Edge> predecessorEdges = new HashMap<>();
+    PriorityQueue<Station> queue = new PriorityQueue<>(Comparator.comparingInt(distanceLog::get));
+    distanceLog.put(src, 0); //initialise distance to source node as 0
+    queue.add(src);  //add the source node to the priority queue
+    for (Station station : tflNetwork.keySet()){
+      distanceLog.put(station, Integer.MAX_VALUE);  //set distance to all other nodes as infinity
+    }
+
+    while (!queue.isEmpty()) {
+      Station currentStation = queue.poll();
+
+      //if destination is reached
+      if(currentStation.equals(dest)){
+        break;
+      }
+
+      for (Edge edge : tflNetwork.get(currentStation)) {
+        Integer newDistance = distanceLog.get(currentStation) + edge.getDistance();
+        if (newDistance < distanceLog.get(edge.getDestination())) {
+          distanceLog.put(edge.getDestination(), newDistance);
+          queue.add((edge.getDestination()));
+          predecessorEdges.put(edge.getDestination(), edge);
+        }
+      }
+    }
+
+    // reconstructing the path
+    LinkedList<Edge> path = new LinkedList<>();
+    Station currentStation = dest;
+    while (predecessorEdges.containsKey(currentStation)) {
+      Edge edge = predecessorEdges.get(currentStation);
+      path.addFirst(edge);
+      currentStation = getStationFromEdge(edge, currentStation);
+    }
+
+    if (distanceLog.get(dest) == Integer.MAX_VALUE) {
+      System.out.println("error");
+      return null;
+    } else {
+      return path;
+    }
+  }
+
+  private Station getStationFromEdge(Edge edge, Station station) {
+    for(Map.Entry<Station, List<Edge>> entry : tflNetwork.entrySet()) {
+      if (entry.getValue().contains(edge) && edge.getDestination().equals(station)) {
+        return entry.getKey();
+      }
+    }
+    return null;
+  }
+
+
 }
