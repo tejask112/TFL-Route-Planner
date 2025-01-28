@@ -17,13 +17,15 @@ public class Network {
     int travelTime;
     String departurePlatform;
     String arrivalPlatform;
+    ArrayList<String> subLines = new ArrayList<>();
 
-    Edge(Station nDestination, Line nLine, int nTravelTime, String departingPlatform, String arrivalPlatform) {
+    Edge(Station nDestination, Line nLine, int nTravelTime, String departingPlatform, String arrivalPlatform, ArrayList<String> nSubLines) {
       this.destination = nDestination;
       this.line = nLine;
       this.travelTime = nTravelTime;
       this.departurePlatform = departingPlatform;
       this.arrivalPlatform = arrivalPlatform;
+      this.subLines = nSubLines;
     }
 
     public Station getDestination() {
@@ -35,7 +37,7 @@ public class Network {
     }
 
     public String toString(){
-      return destination + " (" + line + ", " + travelTime + "mins, " + "Departure: "+departurePlatform + ", Arrival: "+arrivalPlatform + ")";
+      return destination + " (" + line + ", " + travelTime + "mins, " + "Departure: "+departurePlatform + ", Arrival: "+arrivalPlatform + ", through sublines: " + subLines + ")";
     }
   }
 
@@ -54,9 +56,9 @@ public class Network {
   }
 
   // Adds a connection between two stations
-  public void addEdge(Station src, Station dest, Line line, int travelTime, String departingPlatform, String arrivingPlatform) {
+  public void addEdge(Station src, Station dest, Line line, int travelTime, String departingPlatform, String arrivingPlatform, ArrayList<String> subLines) {
     tflNetwork.putIfAbsent(src, new ArrayList<>());
-    tflNetwork.get(src).add(new Edge(dest, line, travelTime, departingPlatform, arrivingPlatform));
+    tflNetwork.get(src).add(new Edge(dest, line, travelTime, departingPlatform, arrivingPlatform, subLines));
   }
 
   //removes a station from the tfl network (used when there is part closure)
