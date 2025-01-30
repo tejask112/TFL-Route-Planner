@@ -1,11 +1,14 @@
 package codebase;
-
+import codebase.Network.Edge;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Scanner;
 import java.util.List;
 
 public class Main {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws NoSuchFieldException {
 
     Network tflNetwork = new Network();
 
@@ -184,81 +187,82 @@ public class Main {
     tflNetwork.addEdge(Watford, Croxley, Metropolitan, 5, "Platform 1", "Platform 2", new ArrayList<>(List.of("Metropolitan Aldgate")));
 
 //    // ======== PICCADILLY LINE EDGES ========
-//    tflNetwork.addEdge(Cockfosters, Oakwood, Piccadilly, 3, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(Oakwood, Cockfosters, Piccadilly, 3, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(Oakwood, Southgate, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(Southgate, Oakwood, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(Southgate, ArnosGrove, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(ArnosGrove, Southgate, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(ArnosGrove, BoundsGreen, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(BoundsGreen, ArnosGrove, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(BoundsGreen, WoodGreen, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(WoodGreen, BoundsGreen, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(WoodGreen, TurnpikeLane, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(TurnpikeLane, WoodGreen, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(TurnpikeLane, ManorHouse, Piccadilly, 3, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(ManorHouse, TurnpikeLane, Piccadilly, 3, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(ManorHouse, FinsburyPark, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(FinsburyPark, ManorHouse, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(FinsburyPark, KingsCrossStPancras, Piccadilly, 5, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(KingsCrossStPancras, FinsburyPark, Piccadilly, 5, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(KingsCrossStPancras, RussellSquare, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(RussellSquare, KingsCrossStPancras, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(RussellSquare, Holborn, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(Holborn, RussellSquare, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(Holborn, CoventGarden, Piccadilly, 1, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(CoventGarden, Holborn, Piccadilly, 1, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(CoventGarden, LeicesterSquare, Piccadilly, 1, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(LeicesterSquare, CoventGarden, Piccadilly, 1, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(LeicesterSquare, PiccadillyCircus, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(PiccadillyCircus, LeicesterSquare, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(PiccadillyCircus, GreenPark, Piccadilly, 1, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(GreenPark, PiccadillyCircus, Piccadilly, 1, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(GreenPark, HydeParkCorner, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(HydeParkCorner, GreenPark, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(HydeParkCorner, Knightsbridge, Piccadilly, 1, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(Knightsbridge, HydeParkCorner, Piccadilly, 1, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(Knightsbridge, SouthKensington, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(SouthKensington, Knightsbridge, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(SouthKensington, GloucesterRoad, Piccadilly, 1, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(GloucesterRoad, SouthKensington, Piccadilly, 1, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(GloucesterRoad, EarlsCourt, Piccadilly, 1, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(EarlsCourt, GloucesterRoad, Piccadilly, 1, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(EarlsCourt, BaronsCourt, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(BaronsCourt, EarlsCourt, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(BaronsCourt, Hammersmith, Piccadilly, 1, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(Hammersmith, BaronsCourt, Piccadilly, 1, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(Hammersmith, TurnhamGreen, Piccadilly, 4, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(TurnhamGreen, Hammersmith, Piccadilly, 4, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(TurnhamGreen, ActonTown, Piccadilly, 3, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(ActonTown, TurnhamGreen, Piccadilly, 3, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(ActonTown, EalingCommon, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(EalingCommon, ActonTown, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(EalingCommon, NorthEaling, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(NorthEaling, EalingCommon, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(NorthEaling, ParkRoyal, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(ParkRoyal, NorthEaling, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(ParkRoyal, Alperton, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(Alperton, ParkRoyal, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(Alperton, SudburyTown, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(SudburyTown, Alperton, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(SudburyTown, SudburyHill, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(SudburyHill, SudburyTown, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(SudburyHill, SouthHarrow, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(SouthHarrow, SudburyHill, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(SouthHarrow, RaynersLane, Piccadilly, 3, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(RaynersLane, SouthHarrow, Piccadilly, 3, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(RaynersLane, Eastcote, Piccadilly, 3, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(Eastcote, RaynersLane, Piccadilly, 3, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(Eastcote, RuislipManor, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(RuislipManor, Eastcote, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(RuislipManor, Ruislip, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(Ruislip, RuislipManor, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(Ruislip, Ickenham, Piccadilly, 3, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(Ickenham, Ruislip, Piccadilly, 3, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(Ickenham, Hillingdon, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(Hillingdon, Ickenham, Piccadilly, 2, "Platform 1", "Platform 2");
-//    tflNetwork.addEdge(Hillingdon, Uxbridge, Piccadilly, 2, "Platform 1", "Platform 2");
+// ======== PICCADILLY LINE EDGES ========
+    tflNetwork.addEdge(Cockfosters, Oakwood, Piccadilly, 3, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(Oakwood, Cockfosters, Piccadilly, 3, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(Oakwood, Southgate, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(Southgate, Oakwood, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(Southgate, ArnosGrove, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(ArnosGrove, Southgate, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(ArnosGrove, BoundsGreen, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(BoundsGreen, ArnosGrove, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(BoundsGreen, WoodGreen, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(WoodGreen, BoundsGreen, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(WoodGreen, TurnpikeLane, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(TurnpikeLane, WoodGreen, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(TurnpikeLane, ManorHouse, Piccadilly, 3, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(ManorHouse, TurnpikeLane, Piccadilly, 3, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(ManorHouse, FinsburyPark, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(FinsburyPark, ManorHouse, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(FinsburyPark, KingsCrossStPancras, Piccadilly, 5, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(KingsCrossStPancras, FinsburyPark, Piccadilly, 5, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(KingsCrossStPancras, RussellSquare, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(RussellSquare, KingsCrossStPancras, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(RussellSquare, Holborn, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(Holborn, RussellSquare, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(Holborn, CoventGarden, Piccadilly, 1, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(CoventGarden, Holborn, Piccadilly, 1, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(CoventGarden, LeicesterSquare, Piccadilly, 1, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(LeicesterSquare, CoventGarden, Piccadilly, 1, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(LeicesterSquare, PiccadillyCircus, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(PiccadillyCircus, LeicesterSquare, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(PiccadillyCircus, GreenPark, Piccadilly, 1, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(GreenPark, PiccadillyCircus, Piccadilly, 1, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(GreenPark, HydeParkCorner, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(HydeParkCorner, GreenPark, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(HydeParkCorner, Knightsbridge, Piccadilly, 1, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(Knightsbridge, HydeParkCorner, Piccadilly, 1, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(Knightsbridge, SouthKensington, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(SouthKensington, Knightsbridge, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(SouthKensington, GloucesterRoad, Piccadilly, 1, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(GloucesterRoad, SouthKensington, Piccadilly, 1, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(GloucesterRoad, EarlsCourt, Piccadilly, 1, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(EarlsCourt, GloucesterRoad, Piccadilly, 1, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(EarlsCourt, BaronsCourt, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(BaronsCourt, EarlsCourt, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(BaronsCourt, Hammersmith, Piccadilly, 1, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(Hammersmith, BaronsCourt, Piccadilly, 1, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(Hammersmith, TurnhamGreen, Piccadilly, 4, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(TurnhamGreen, Hammersmith, Piccadilly, 4, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(TurnhamGreen, ActonTown, Piccadilly, 3, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(ActonTown, TurnhamGreen, Piccadilly, 3, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
+    tflNetwork.addEdge(ActonTown, EalingCommon, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge")));
+    tflNetwork.addEdge(EalingCommon, ActonTown, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(EalingCommon, NorthEaling, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge")));
+    tflNetwork.addEdge(NorthEaling, EalingCommon, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(NorthEaling, ParkRoyal, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge")));
+    tflNetwork.addEdge(ParkRoyal, NorthEaling, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(ParkRoyal, Alperton, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge")));
+    tflNetwork.addEdge(Alperton, ParkRoyal, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(Alperton, SudburyTown, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge")));
+    tflNetwork.addEdge(SudburyTown, Alperton, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(SudburyTown, SudburyHill, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge")));
+    tflNetwork.addEdge(SudburyHill, SudburyTown, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(SudburyHill, SouthHarrow, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge")));
+    tflNetwork.addEdge(SouthHarrow, SudburyHill, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(SouthHarrow, RaynersLane, Piccadilly, 3, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge")));
+    tflNetwork.addEdge(RaynersLane, SouthHarrow, Piccadilly, 3, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(RaynersLane, Eastcote, Piccadilly, 3, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge")));
+    tflNetwork.addEdge(Eastcote, RaynersLane, Piccadilly, 3, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(Eastcote, RuislipManor, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge")));
+    tflNetwork.addEdge(RuislipManor, Eastcote, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(RuislipManor, Ruislip, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge")));
+    tflNetwork.addEdge(Ruislip, RuislipManor, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(Ruislip, Ickenham, Piccadilly, 3, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge")));
+    tflNetwork.addEdge(Ickenham, Ruislip, Piccadilly, 3, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(Ickenham, Hillingdon, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge")));
+    tflNetwork.addEdge(Hillingdon, Ickenham, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(Hillingdon, Uxbridge, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge")));
 //    tflNetwork.addEdge(Uxbridge, Hillingdon, Piccadilly, 2, "Platform 1", "Platform 2");
 //    tflNetwork.addEdge(ActonTown, SouthEaling, Piccadilly, 3, "Platform 1", "Platform 2");
 //    tflNetwork.addEdge(SouthEaling, ActonTown, Piccadilly, 3, "Platform 1", "Platform 2");
@@ -286,7 +290,8 @@ public class Main {
 //    tflNetwork.addEdge(HeathrowTerminals2_3, HeathrowTerminal4, Piccadilly, 4, "Platform 1", "Platform 2");
 
 
-    System.out.println(tflNetwork.findRoute(Uxbridge, Watford));
+    LinkedList<Edge> route = tflNetwork.findRoute(SouthKensington, FinchleyRoad);
+    System.out.println(tflNetwork.findLinesAlongRoute(route));
 
   }
 

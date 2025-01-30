@@ -1,6 +1,8 @@
 package codebase;
+import codebase.Network.Edge;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 public class Station {
@@ -23,13 +25,17 @@ public class Station {
     return name;
   }
 
-  public Station retrieveStationFromString(String name) throws Exception {
+  public static Station retrieveStationFromString(String name) throws Exception {
     Station station = stations.get(name);
     if (station==null) {
       throw new Exception ("No station with this name found");
     } else {
       return station;
     }
+  }
+
+  public Map<String, Station> getStations() {
+    return stations;
   }
 
 }

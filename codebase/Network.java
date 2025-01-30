@@ -36,6 +36,10 @@ public class Network {
       return travelTime;
     }
 
+    public Line getLine() {
+      return line;
+    }
+
     public String toString(){
       return destination + " (" + line + ", " + travelTime + "mins, " + "Departure: "+departurePlatform + ", Arrival: "+arrivalPlatform + ", through sublines: " + subLines + ")";
     }
@@ -143,6 +147,18 @@ public class Network {
       }
     }
     return null;
+  }
+
+  public LinkedList<Line> findLinesAlongRoute(LinkedList<Edge> route){
+    LinkedList<Line> lines = new LinkedList<>();
+    Map<Line, Boolean> mappedLines = new HashMap<>();
+    for (Edge edge : route){
+      if (mappedLines.get(edge.getLine()) == null) {
+        mappedLines.put(edge.getLine(), Boolean.TRUE);
+        lines.add(edge.getLine());
+      }
+    }
+    return lines;
   }
 
 
