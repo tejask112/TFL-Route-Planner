@@ -61,6 +61,7 @@ public class App extends Application {
     bottomHalf.getChildren().addAll(userInput,resultBox);
     root.setCenter(bottomHalf);
 
+    // ---------------------------- UserInput VBox ----------------------------
 
     Scene scene = new Scene(root, 900, 500);
     stage.setScene(scene);
