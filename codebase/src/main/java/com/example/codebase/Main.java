@@ -1,14 +1,12 @@
 package com.example.codebase;
 import com.example.codebase.Network.Edge;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Scanner;
 import java.util.List;
 
 public class Main {
 
-  public static void main(String[] args) throws NoSuchFieldException {
+  public static void main(String[] args) {
 
     Network tflNetwork = new Network();
 
