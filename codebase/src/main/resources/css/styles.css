@@ -1,0 +1,35 @@
+
+.leaveText {
+  -fx-text-fill: #A0A0A0;
+  -fx-font-size: 16px;
+}
+
+.leaveText-Title {
+  -fx-font-weight: bold;
+}
+
+.planJourneyButton {
+  -fx-background-color: #282828;
+  -fx-text-fill: #E0E0E0;
+  -fx-border-color: #3A3A3A;
+  -fx-border-radius: 8px;
+  -fx-font-size: 14px;
+  -fx-padding: 5px 20px;
+}
+
+.planJourneyButton:hover {
+  -fx-background-color: #383838;
+  -fx-border-color: #3992d2;
+  -fx-cursor: hand;
+}
+
+.planJourneyButton:pressed {
+  -fx-background-color: #4A4A4A;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.6), 8, 0.5, 0, 2);
+}
+
+.planJourneyButton:disabled {
+  -fx-background-color: #2A2A2A;
+  -fx-text-fill: #6E6E6E;
+}
+

@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 public class Network {
 
@@ -159,6 +160,10 @@ public class Network {
       }
     }
     return lines;
+  }
+
+  public Set<Station> getStations() {
+    return tflNetwork.keySet();
   }
 
 

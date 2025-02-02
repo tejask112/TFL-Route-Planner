@@ -130,7 +130,6 @@ public class Main {
     tflNetwork.addEdge(NorthHarrow, Pinner, Metropolitan, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Metropolitan Amersham", "Metropolitan Chesham", "Metropolitan Watford")));
     tflNetwork.addEdge(NorthHarrow, HarrowOnTheHill, Metropolitan, 4, "Platform 1", "Platform 2", new ArrayList<>(List.of("Metropolitan Aldgate")));
     tflNetwork.addEdge(HarrowOnTheHill, NorthHarrow, Metropolitan, 4, "Platform 1", "Platform 2", new ArrayList<>(List.of("Metropolitan Amersham", "Metropolitan Chesham", "Metropolitan Watford")));
-
     tflNetwork.addEdge(HarrowOnTheHill, NorthwickPark, Metropolitan, 2, "Platform 3", "Platform 2", new ArrayList<>(List.of("Metropolitan Aldgate")));
     tflNetwork.addEdge(NorthwickPark, HarrowOnTheHill, Metropolitan, 2, "Platform 1", "Platform 4", new ArrayList<>(List.of("Metropolitan Amersham", "Metropolitan Chesham", "Metropolitan Watford")));
     tflNetwork.addEdge(NorthwickPark, PrestonRoad, Metropolitan, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Metropolitan Aldgate")));
@@ -177,9 +176,6 @@ public class Main {
     tflNetwork.addEdge(Croxley, MoorPark, Metropolitan, 3, "Platform 1", "Platform 2", new ArrayList<>(List.of("Metropolitan Aldgate")));
     tflNetwork.addEdge(Croxley, Watford, Metropolitan, 5, "Platform 1", "Platform 2", new ArrayList<>(List.of("Metropolitan Watford")));
     tflNetwork.addEdge(Watford, Croxley, Metropolitan, 5, "Platform 1", "Platform 2", new ArrayList<>(List.of("Metropolitan Aldgate")));
-
-//    // ======== PICCADILLY LINE EDGES ========
-// ======== PICCADILLY LINE EDGES ========
     tflNetwork.addEdge(Cockfosters, Oakwood, Piccadilly, 3, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
     tflNetwork.addEdge(Oakwood, Cockfosters, Piccadilly, 3, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Cockfosters")));
     tflNetwork.addEdge(Oakwood, Southgate, Piccadilly, 2, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
