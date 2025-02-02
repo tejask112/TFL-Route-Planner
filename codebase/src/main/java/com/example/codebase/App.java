@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -390,18 +391,29 @@ public class App extends Application {
     Button submit = new Button("Find quickest route");
     submit.getStyleClass().add("planJourneyButton");
     userInput.setMargin(submit, new Insets(10, 0, 0, 20));
+    Label errorLabel = new Label("");
+    errorLabel.getStyleClass().add("noStationsError");
+    userInput.getChildren().addAll(title, srcStation, destStation, gridPane, submit, errorLabel);
 
     EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
       public void handle (ActionEvent e) {
-        LinkedList<Edge> route = tflNetwork.findRoute(srcStation.getValue(), destStation.getValue());
-        System.out.println(route);
+        try {
+          if (srcStation.getValue() == null || destStation.getValue() == null){
+            throw new Exception("Departure and Arrival Stations Required!");
+          } else {
+            errorLabel.setText("");
+            LinkedList<Edge> route = tflNetwork.findRoute(srcStation.getValue(), destStation.getValue());
+            System.out.println(route);
+          }
+        } catch (Exception exception) {
+          Platform.runLater(() -> {
+            errorLabel.setText(exception.getMessage());
+          });
+        }
       }
     };
 
     submit.setOnAction(event);
-
-
-    userInput.getChildren().addAll(title, srcStation, destStation, gridPane, submit);
 
     Scene scene = new Scene(root, 1000, 650);
     scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());

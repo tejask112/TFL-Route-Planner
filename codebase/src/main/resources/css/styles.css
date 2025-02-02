@@ -8,6 +8,12 @@
   -fx-font-weight: bold;
 }
 
+.noStationsError {
+  -fx-font-weight: bold;
+  -fx-padding: 5px 20px;
+  -fx-text-fill: red;
+}
+
 .planJourneyButton {
   -fx-background-color: #282828;
   -fx-text-fill: #E0E0E0;
