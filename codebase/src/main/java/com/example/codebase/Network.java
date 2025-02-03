@@ -201,9 +201,19 @@ public class Network {
           subLinesCount.put(s, 1);
         }
       } else {
+        for (String s : new ArrayList<>(subLinesMap.keySet())) {
+          if (!listOfSubLines.contains(s)) {
+            subLinesMap.remove(s);
+            subLinesCount.remove(s);
+          }
+        }
         for (String s : listOfSubLines) {
           subLinesMap.put(s, true);
-          subLinesCount.put(s, subLinesCount.get(s)+1);
+          if (subLinesCount.get(s) == null) {
+            subLinesCount.put(s, 1);
+          } else {
+            subLinesCount.put(s, subLinesCount.get(s)+1);
+          }
         }
       }
 
@@ -211,7 +221,6 @@ public class Network {
         String maxSubLine = Collections.max(subLinesCount.entrySet(), Map.Entry.comparingByValue()).getKey();
         finalSubLineList.add(maxSubLine);
       }
-
     }
 
     return finalSubLineList;

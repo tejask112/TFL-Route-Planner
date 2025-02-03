@@ -279,7 +279,7 @@ public class Main {
     tflNetwork.addEdge(HeathrowTerminals2_3, HeathrowTerminal4, Piccadilly, 4, "Platform 1", "Platform 2", new ArrayList<>(List.of("Piccadilly Heathrow T4")));
 
 
-    LinkedList<Edge> route = tflNetwork.findRoute(CoventGarden, RaynersLane);
+    LinkedList<Edge> route = tflNetwork.findRoute(CoventGarden, Amersham);
 
     System.out.println(route);
     for (Edge edge : route) {
