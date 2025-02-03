@@ -11,7 +11,7 @@
 .noStationsError {
   -fx-font-weight: bold;
   -fx-padding: 5px 20px;
-  -fx-text-fill: red;
+  -fx-text-fill: #a90202;
 }
 
 .planJourneyButton {
@@ -39,3 +39,28 @@
   -fx-text-fill: #6E6E6E;
 }
 
+.tflLogo {
+  -fx-translate-x: 25px;
+}
+
+.topTitleBar {
+  -fx-background-color: #2d3039;
+}
+
+.stationComboBox {
+  -fx-background-color: #404040;
+  -fx-text-fill: #E0E0E0;
+  -fx-pref-width: 280px;
+  -fx-pref-height: 35px;
+  -fx-prompt-text-fill: #E0E0E0;
+  -fx-font-size: 16px;
+}
+
+.stationComboBox .combo-box-display-node {
+  -fx-text-fill: #E0E0E0;
+}
+
+.stationComboBox .list-cell {
+  -fx-text-fill: #E0E0E0;
+  -fx-background-color: #404040;
+}

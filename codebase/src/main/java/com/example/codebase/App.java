@@ -1,7 +1,6 @@
 package com.example.codebase;
 
 import com.example.codebase.Network.Edge;
-import java.security.spec.EllipticCurve;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,14 +16,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.geometry.Pos;
-import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
 
 public class App extends Application {
@@ -39,14 +36,14 @@ public class App extends Application {
 
     // ---------------------------- Top title bar ----------------------------
     HBox topBar = new HBox();
-    topBar.setStyle("-fx-background-color: #2d3039");
+    topBar.getStyleClass().add("topTitleBar");
 
     // introducing the tfl logo
     Image logo = new Image(getClass().getResourceAsStream("/images/tfl-logo.jpg"));
     ImageView logoView = new ImageView(logo);
     logoView.setFitHeight(70);
     logoView.setPreserveRatio(true);
-    logoView.setStyle("-fx-translate-x: 25px");
+    logoView.getStyleClass().add("tflLogo");
 
     // introducing the thames illustration logo
     Image thames = new Image(getClass().getResourceAsStream("/images/thames-logo.png"));
@@ -362,7 +359,8 @@ public class App extends Application {
       }
     });
     srcStation.setPromptText("Departure");
-    srcStation.setStyle("-fx-translate-y: 50px; -fx-translate-x: 20px; -fx-background-color: #404040; -fx-text-fill: #ffffff;  -fx-pref-width: 280px; -fx-pref-height: 35px; -fx-prompt-text-fill: #ffffff; -fx-font-size: 16px;");
+    srcStation.setStyle("-fx-translate-y: 50px; -fx-translate-x: 20px;");
+    srcStation.getStyleClass().add("stationComboBox");
 
     ComboBox<Station> destStation = new ComboBox<>();
     destStation.getItems().addAll(tflNetwork.getStations());
@@ -377,7 +375,8 @@ public class App extends Application {
       }
     });
     destStation.setPromptText("Arrival");
-    destStation.setStyle("-fx-translate-y: 60px; -fx-translate-x: 20px; -fx-background-color: #404040; -fx-text-fill: #ffffff;  -fx-pref-width: 280px; -fx-pref-height: 35px; -fx-prompt-text-fill: #ffffff; -fx-font-size: 16px;");
+    destStation.setStyle("-fx-translate-y: 60px; -fx-translate-x: 20px;");
+    destStation.getStyleClass().add("stationComboBox");
 
     Label leaveTitle = new Label("Leaving: ");
     leaveTitle.getStyleClass().addAll("leaveText", "leaveText-Title");

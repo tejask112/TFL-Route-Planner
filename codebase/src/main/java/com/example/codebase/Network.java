@@ -1,6 +1,8 @@
 package com.example.codebase;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -39,6 +41,10 @@ public class Network {
 
     public Line getLine() {
       return line;
+    }
+
+    public ArrayList<String> getSubLines() {
+      return subLines;
     }
 
     public String toString(){
@@ -161,6 +167,35 @@ public class Network {
     }
     return lines;
   }
+
+  public LinkedList<String> findSubLinesAlongRoute(LinkedList<Edge> route) {
+    LinkedList<String> finalSubLineList = new LinkedList<>();
+    Map<String, Boolean> mappedSubLines = new HashMap<>();
+    Collections.reverse(route);
+    for (Edge edge : route) {
+      ArrayList<String> subLines = edge.getSubLines();
+      if (subLines.size() == 1) {
+        finalSubLineList.add(subLines.get(0));
+        mappedSubLines.put(subLines.get(0), true);
+      } else {
+        if (finalSubLineList.isEmpty()) {
+          // need to add a station to the list optimally
+        } else {
+          if (subLines.contains(finalSubLineList.getLast())){
+            continue;
+          } else {
+
+          }
+        }
+      }
+    }
+    Collections.reverse(finalSubLineList);
+    return finalSubLineList;
+  }
+
+//  public void findSubLinesAlongRoute(LinkedList<Edge> route) {
+//
+//  }
 
   public Set<Station> getStations() {
     return tflNetwork.keySet();
