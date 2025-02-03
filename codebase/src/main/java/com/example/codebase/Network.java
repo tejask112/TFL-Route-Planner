@@ -170,32 +170,55 @@ public class Network {
 
   public LinkedList<String> findSubLinesAlongRoute(LinkedList<Edge> route) {
     LinkedList<String> finalSubLineList = new LinkedList<>();
-    Map<String, Boolean> mappedSubLines = new HashMap<>();
-    Collections.reverse(route);
-    for (Edge edge : route) {
-      ArrayList<String> subLines = edge.getSubLines();
-      if (subLines.size() == 1) {
-        finalSubLineList.add(subLines.get(0));
-        mappedSubLines.put(subLines.get(0), true);
-      } else {
-        if (finalSubLineList.isEmpty()) {
-          // need to add a station to the list optimally
-        } else {
-          if (subLines.contains(finalSubLineList.getLast())){
-            continue;
-          } else {
+    Map<String, Boolean> subLinesMap = new HashMap<>();
+    Map<String, Integer> subLinesCount = new HashMap<>();
+    int iteratorCount = 0;
 
-          }
+    // traverse through each edge
+    for (Edge edge : route) {
+      iteratorCount++;
+      //list of sublines on that specific edge
+      ArrayList<String>  listOfSubLines = edge.getSubLines();
+      //puts each subline for that edge in the hashmap
+      if (subLinesMap.isEmpty()) {
+        for (String s : listOfSubLines) {
+          subLinesMap.put(s, true);
+          subLinesCount.put(s, 0);
         }
       }
+      // checks if at least one of the sublines in listOfSubLines is present
+      int count = 0;
+      for (String s : listOfSubLines) {
+        if (subLinesMap.get(s) == null) { count++; }
+      }
+      if (count == listOfSubLines.size()) {
+        String maxSubLine = Collections.max(subLinesCount.entrySet(), Map.Entry.comparingByValue()).getKey();
+        finalSubLineList.add(maxSubLine);
+        subLinesMap.clear();
+        subLinesCount.clear();
+        for (String s : listOfSubLines) {
+          subLinesMap.put(s, true);
+          subLinesCount.put(s, 1);
+        }
+      } else {
+        for (String s : listOfSubLines) {
+          subLinesMap.put(s, true);
+          subLinesCount.put(s, subLinesCount.get(s)+1);
+        }
+      }
+
+      if (iteratorCount == route.size()){
+        String maxSubLine = Collections.max(subLinesCount.entrySet(), Map.Entry.comparingByValue()).getKey();
+        finalSubLineList.add(maxSubLine);
+      }
+
     }
-    Collections.reverse(finalSubLineList);
+
     return finalSubLineList;
   }
 
-//  public void findSubLinesAlongRoute(LinkedList<Edge> route) {
-//
-//  }
+
+
 
   public Set<Station> getStations() {
     return tflNetwork.keySet();
