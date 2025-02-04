@@ -47,6 +47,9 @@ public class Network {
       return subLines;
     }
 
+    public String getDeparturePlatform() {
+      return departurePlatform;
+    }
     public String toString(){
       return destination + " (" + line + ", " + travelTime + "mins, " + "Departure: "+departurePlatform + ", Arrival: "+arrivalPlatform + ", through sublines: " + subLines + ")";
     }
@@ -193,7 +196,9 @@ public class Network {
       }
       if (count == listOfSubLines.size()) {
         String maxSubLine = Collections.max(subLinesCount.entrySet(), Map.Entry.comparingByValue()).getKey();
-        finalSubLineList.add(maxSubLine);
+        for (int i=0; i<subLinesCount.get(maxSubLine); i++) {
+          finalSubLineList.add(maxSubLine);
+        }
         subLinesMap.clear();
         subLinesCount.clear();
         for (String s : listOfSubLines) {
@@ -215,10 +220,11 @@ public class Network {
       }
       if (iteratorCount == route.size()){
         String maxSubLine = Collections.max(subLinesCount.entrySet(), Map.Entry.comparingByValue()).getKey();
-        finalSubLineList.add(maxSubLine);
+        for (int i=0; i<subLinesCount.get(maxSubLine); i++) {
+          finalSubLineList.add(maxSubLine);
+        }
       }
     }
-
     return finalSubLineList;
   }
 

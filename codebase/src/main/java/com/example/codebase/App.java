@@ -405,6 +405,8 @@ public class App extends Application {
             errorLabel.setText("");
             LinkedList<Edge> route = tflNetwork.findRoute(srcStation.getValue(), destStation.getValue());
             System.out.println(route);
+            System.out.println(tflNetwork.findLinesAlongRoute(route));
+            System.out.println(tflNetwork.findSubLinesAlongRoute(route));
             try {
               if (route.isEmpty()) {
                 throw new Exception("Departure and Arrival stations must be distinct");
@@ -414,7 +416,6 @@ public class App extends Application {
                   Label destinationMessage = new Label("Your Route to "+destStation.getValue().getName());
                   destinationMessageHBox.getChildren().add(destinationMessage);
                   destinationMessageHBox.setPrefWidth(resultBox.getPrefWidth());
-                  destinationMessageHBox.setPrefHeight(100);
                   destinationMessage.getStyleClass().add("destinationMessage");
                   resultBox.getChildren().add(destinationMessageHBox);
 
@@ -435,12 +436,50 @@ public class App extends Application {
                   // generating the labels for the source station to be outputted on screen
                   HBox originBox = new HBox();
                   Label originTitle = new Label(srcStation.getValue().getName());
-                  originTitle.getStyleClass().add("originTitle");
+                  originTitle.getStyleClass().add("boardStationName");
                   Label originLine = new Label(route.get(0).getLine().toString());
-                  originLine.getStyleClass().add("originLine");
+                  originLine.getStyleClass().add("boardLineName");
                   originLine.setStyle("-fx-background-color: "+lineColours.get(route.get(0).getLine()));
                   originBox.getChildren().addAll(originTitle, originLine);
+
+                  // generating and adding the board line label
+                  LinkedList<String> listSubLines = tflNetwork.findSubLinesAlongRoute(route);
+                  Label boardLabel = new Label("Board "+listSubLines.get(0)+" - "+route.get(0).getDeparturePlatform());
+                  boardLabel.getStyleClass().add("boardLabel");
                   stationsBox.getChildren().add(originBox);
+                  stationsBox.getChildren().add(boardLabel);
+                  System.out.println(listSubLines);
+                  String currentLine = listSubLines.peek();
+                  int edgeIterationCount = 0;
+
+                  for(Edge edge : route) {
+                    edgeIterationCount++;
+                    Label station = new Label(edge.getDestination().getName());
+                    if (edgeIterationCount==route.size()){
+                      station.getStyleClass().add("boardStationName");
+                      stationsBox.getChildren().add(station);
+                    } else {
+                      if (currentLine.equals(listSubLines.peek())) {
+                        station.getStyleClass().add("intermediateStation");
+                        stationsBox.getChildren().add(station);
+                      } else {
+                        HBox switchBox = new HBox();
+                        Label line = new Label(edge.getLine().toString());
+                        line.setStyle("-fx-background-color: "+lineColours.get(edge.getLine()));
+                        line.getStyleClass().add("boardLineName");
+                        station.getStyleClass().add("boardStationName");
+                        switchBox.getChildren().addAll(station, line);
+                        Label switchLines = new Label("Switch to "+listSubLines.peek()+" - "+edge.getDeparturePlatform());
+                        switchLines.getStyleClass().add("boardLabel");
+                        stationsBox.getChildren().addAll(switchBox, switchLines);
+                      }
+                    }
+                    System.out.println(listSubLines);
+                    currentLine = listSubLines.pop();
+
+
+
+                  }
 
 
 

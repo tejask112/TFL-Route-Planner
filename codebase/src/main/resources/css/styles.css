@@ -1,9 +1,41 @@
 
+.arrivalLabel {
+  -fx-text-fill: white;
+  -fx-font-size: 17;
+  -fx-padding: 1 30 2 0;
+}
+
+.boardLineName {
+  -fx-text-fill: white;
+  -fx-translate-y: 4;
+  -fx-font-weight: bold;
+  -fx-padding: 0 10 0 10;
+  -fx-background-radius: 2;
+  -fx-font-size: 13;
+}
+
+.boardStationName {
+  -fx-text-fill: white;
+  -fx-font-size: 17;
+  -fx-padding: 1 30 2 0;
+}
+
+.boardLabel {
+  -fx-text-fill: white;
+  -fx-font-size: 14;
+  -fx-padding: 0 0 5 0;
+}
+
 .destinationMessage {
   -fx-text-fill: white;
-
   -fx-font-size: 19px;
-  -fx-padding: 40 0 0 40;
+  -fx-padding: 40 0 20 40;
+}
+
+.intermediateStation {
+  -fx-padding: 3 30 0 0;
+  -fx-font-size: 10;
+  -fx-text-fill: white;
 }
 
 .leaveText {
@@ -19,18 +51,6 @@
   -fx-font-weight: bold;
   -fx-padding: 5px 20px;
   -fx-text-fill: #a90202;
-}
-
-.originTitle {
-  -fx-text-fill: white;
-  -fx-font-size: 14;
-  -fx-padding: 1 30 2 0;
-}
-
-.originLine {
-  -fx-text-fill: white;
-  -fx-font-weight: bold;
-  -fx-padding: 2 10 2 10;
 }
 
 .planJourneyButton {
