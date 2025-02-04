@@ -21,6 +21,18 @@
   -fx-text-fill: #a90202;
 }
 
+.originTitle {
+  -fx-text-fill: white;
+  -fx-font-size: 14;
+  -fx-padding: 1 30 2 0;
+}
+
+.originLine {
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-padding: 2 10 2 10;
+}
+
 .planJourneyButton {
   -fx-background-color: #282828;
   -fx-text-fill: #E0E0E0;

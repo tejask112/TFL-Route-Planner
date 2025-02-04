@@ -2,8 +2,10 @@ package com.example.codebase;
 
 import com.example.codebase.Network.Edge;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -405,7 +407,7 @@ public class App extends Application {
             System.out.println(route);
             try {
               if (route.isEmpty()) {
-                throw new Exception("No route found. Please try again later");
+                throw new Exception("Departure and Arrival stations must be distinct");
               } else {
                 Platform.runLater(() -> {
                   HBox destinationMessageHBox = new HBox();
@@ -415,6 +417,37 @@ public class App extends Application {
                   destinationMessageHBox.setPrefHeight(100);
                   destinationMessage.getStyleClass().add("destinationMessage");
                   resultBox.getChildren().add(destinationMessageHBox);
+
+                  // generating the hashmap for the different lines and their colours
+                  Map<Line, String> lineColours = new HashMap<>();
+                  lineColours.put(Metropolitan, "#9B0056");
+                  lineColours.put(Piccadilly, "#003688");
+
+                  // generating the outerHbox which contains the station lines and station descriptions
+                  HBox outerHbox = new HBox();
+                  VBox timeAndRouteBox = new VBox();
+                  timeAndRouteBox.setPrefWidth(150);
+                  VBox stationsBox = new VBox();
+                  HBox.setHgrow(stationsBox, Priority.ALWAYS);
+                  stationsBox.setMaxWidth(Double.MAX_VALUE);
+                  outerHbox.getChildren().addAll(timeAndRouteBox, stationsBox);
+
+                  // generating the labels for the source station to be outputted on screen
+                  HBox originBox = new HBox();
+                  Label originTitle = new Label(srcStation.getValue().getName());
+                  originTitle.getStyleClass().add("originTitle");
+                  Label originLine = new Label(route.get(0).getLine().toString());
+                  originLine.getStyleClass().add("originLine");
+                  originLine.setStyle("-fx-background-color: "+lineColours.get(route.get(0).getLine()));
+                  originBox.getChildren().addAll(originTitle, originLine);
+                  stationsBox.getChildren().add(originBox);
+
+
+
+                  resultBox.getChildren().add(outerHbox);
+
+
+
 
                 });
 
