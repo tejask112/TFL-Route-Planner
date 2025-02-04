@@ -403,6 +403,29 @@ public class App extends Application {
             errorLabel.setText("");
             LinkedList<Edge> route = tflNetwork.findRoute(srcStation.getValue(), destStation.getValue());
             System.out.println(route);
+            try {
+              if (route.isEmpty()) {
+                throw new Exception("No route found. Please try again later");
+              } else {
+                Platform.runLater(() -> {
+                  HBox destinationMessageHBox = new HBox();
+                  Label destinationMessage = new Label("Your Route to "+destStation.getValue().getName());
+                  destinationMessageHBox.getChildren().add(destinationMessage);
+                  destinationMessageHBox.setPrefWidth(resultBox.getPrefWidth());
+                  destinationMessageHBox.setPrefHeight(100);
+                  destinationMessage.getStyleClass().add("destinationMessage");
+                  resultBox.getChildren().add(destinationMessageHBox);
+
+                });
+
+
+              }
+            } catch (Exception exception1) {
+              Platform.runLater(() -> {
+                errorLabel.setText(exception1.getMessage());
+              });
+            }
+
           }
         } catch (Exception exception) {
           Platform.runLater(() -> {

@@ -1,4 +1,11 @@
 
+.destinationMessage {
+  -fx-text-fill: white;
+
+  -fx-font-size: 19px;
+  -fx-padding: 40 0 0 40;
+}
+
 .leaveText {
   -fx-text-fill: #A0A0A0;
   -fx-font-size: 16px;

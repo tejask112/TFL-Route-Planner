@@ -209,14 +209,10 @@ public class Network {
         }
         for (String s : listOfSubLines) {
           subLinesMap.put(s, true);
-          if (subLinesCount.get(s) == null) {
-            subLinesCount.put(s, 1);
-          } else {
-            subLinesCount.put(s, subLinesCount.get(s)+1);
-          }
+          if (subLinesCount.get(s) == null) { subLinesCount.put(s, 1); }
+          else {subLinesCount.put(s, subLinesCount.get(s)+1);}
         }
       }
-
       if (iteratorCount == route.size()){
         String maxSubLine = Collections.max(subLinesCount.entrySet(), Map.Entry.comparingByValue()).getKey();
         finalSubLineList.add(maxSubLine);
@@ -225,9 +221,6 @@ public class Network {
 
     return finalSubLineList;
   }
-
-
-
 
   public Set<Station> getStations() {
     return tflNetwork.keySet();
