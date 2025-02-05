@@ -31,25 +31,17 @@ public class Network {
       this.subLines = nSubLines;
     }
 
-    public Station getDestination() {
-      return destination;
-    }
+    public Station getDestination() { return destination; }
 
-    public Integer getDistance() {
-      return travelTime;
-    }
+    public Integer getDistance() { return travelTime; }
 
-    public Line getLine() {
-      return line;
-    }
+    public Line getLine() { return line; }
 
-    public ArrayList<String> getSubLines() {
-      return subLines;
-    }
+    public ArrayList<String> getSubLines() { return subLines; }
 
-    public String getDeparturePlatform() {
-      return departurePlatform;
-    }
+    public String getDeparturePlatform() { return departurePlatform; }
+
+    public int getTravelTime() { return travelTime; }
     public String toString(){
       return destination + " (" + line + ", " + travelTime + "mins, " + "Departure: "+departurePlatform + ", Arrival: "+arrivalPlatform + ", through sublines: " + subLines + ")";
     }

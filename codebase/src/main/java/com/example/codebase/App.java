@@ -454,8 +454,9 @@ public class App extends Application {
 
                   // generating the current time and route line for the source station
                   DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-                  String time = LocalTime.now().format(formatter);
-                  Label currentTimeLabel = new Label(time);
+                  LocalTime currentTime = LocalTime.now();
+                  String initialTime = LocalTime.now().format(formatter);
+                  Label currentTimeLabel = new Label(initialTime);
                   currentTimeLabel.getStyleClass().addAll("timeLabelDeparture");
                   timeBox.getChildren().add(currentTimeLabel);
 
@@ -470,7 +471,8 @@ public class App extends Application {
                   int edgeIterationCount = 0;
 
                   for(Edge edge : route) {
-                    String localTime = LocalTime.parse(time, formatter).plusMinutes(edge.travelTime).format(formatter);
+                    currentTime = currentTime.plusMinutes(edge.getTravelTime());
+                    String localTime = currentTime.format(formatter);
                     edgeIterationCount++;
                     Label station = new Label(edge.getDestination().getName());
                     currentLine = listSubLines.pop();
@@ -489,8 +491,8 @@ public class App extends Application {
                         timeBox.getChildren().add(emptyTime);
                       } else {
                         HBox switchBox = new HBox();
-                        Label line = new Label(edge.getLine().toString());
-                        line.setStyle("-fx-background-color: "+lineColours.get(edge.getLine()));
+                        Label line = new Label(route.get(edgeIterationCount+1).getLine().toString());
+                        line.setStyle("-fx-background-color: "+lineColours.get(route.get(edgeIterationCount+1).getLine()));
                         line.getStyleClass().add("boardLineName");
                         station.getStyleClass().add("boardStationName");
                         switchBox.getChildren().addAll(station, line);
