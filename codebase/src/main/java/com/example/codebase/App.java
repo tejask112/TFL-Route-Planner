@@ -57,7 +57,7 @@ public class App extends Application {
     ImageView thamesView = new ImageView(thames);
     thamesView.setFitHeight(50);
     thamesView.setPreserveRatio(true);
-    thamesView.setStyle("-fx-translate-x: 25px");
+    thamesView.getStyleClass().add("thamesLogo");
 
     HBox.setMargin(logoView, new javafx.geometry.Insets(0, 10, 0, 0));
     topBar.setAlignment(Pos.CENTER_LEFT);
@@ -68,9 +68,9 @@ public class App extends Application {
     HBox bottomHalf = new HBox();
 
     VBox userInput = new VBox();
-    userInput.setStyle("-fx-background-color: #181818");
+    userInput.getStyleClass().add("userInputBox");
     VBox resultBox = new VBox();
-    resultBox.setStyle("-fx-background-color: #202225");
+    resultBox.getStyleClass().add("resultsBox");
     userInput.setPrefWidth(225);
     resultBox.setPrefWidth(575);
     HBox.setHgrow(userInput, Priority.ALWAYS);
@@ -81,7 +81,7 @@ public class App extends Application {
 
     // ---------------------------- UserInput VBox ----------------------------
     Label title = new Label("Plan a Journey");
-    title.setStyle("-fx-font-size: 40px; -fx-font-weight: bold ; -fx-text-fill: white; -fx-translate-x: 20px; -fx-translate-y: 40px; -fx-padding: 5 5 5 5;");
+    title.getStyleClass().add("planJourneyTitle");
 
     Network tflNetwork = new Network();
 

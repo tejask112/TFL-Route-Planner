@@ -79,6 +79,19 @@
   -fx-text-fill: #6E6E6E;
 }
 
+.planJourneyTitle {
+  -fx-font-size: 40px;
+  -fx-font-weight: bold;
+  -fx-text-fill: white;
+  -fx-translate-x: 20px;
+  -fx-translate-y: 40px;
+  -fx-padding: 5 5 5 5;
+}
+
+.resultsBox {
+  -fx-background-color: #202225;
+}
+
 .tflLogo {
   -fx-translate-x: 25px;
 }
@@ -103,6 +116,10 @@
 .stationComboBox .list-cell {
   -fx-text-fill: #E0E0E0;
   -fx-background-color: #404040;
+}
+
+.thamesLogo {
+  -fx-translate-x: 25px;
 }
 
 .timeLabel {
@@ -131,4 +148,8 @@
   -fx-font-size: 17;
   -fx-text-fill: white;
   -fx-padding: 1 0 32 60;
+}
+
+.userInputBox {
+  -fx-background-color: #181818;
 }
