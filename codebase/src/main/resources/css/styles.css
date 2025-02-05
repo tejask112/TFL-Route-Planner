@@ -18,18 +18,19 @@
   -fx-text-fill: white;
   -fx-font-size: 17;
   -fx-padding: 1 30 2 0;
+  -fx-font-weight: bold;
 }
 
 .boardLabel {
   -fx-text-fill: white;
-  -fx-font-size: 14;
+  -fx-font-size: 17;
   -fx-padding: 0 0 5 0;
 }
 
 .destinationMessage {
   -fx-text-fill: white;
   -fx-font-size: 19px;
-  -fx-padding: 40 0 20 40;
+  -fx-padding: 40 40 20 40;
 }
 
 .intermediateStation {
@@ -102,4 +103,32 @@
 .stationComboBox .list-cell {
   -fx-text-fill: #E0E0E0;
   -fx-background-color: #404040;
+}
+
+.timeLabel {
+  -fx-font-size: 17;
+  -fx-text-fill: white;
+}
+
+.timeLabelArrival {
+  -fx-font-size: 17;
+  -fx-text-fill: white;
+  -fx-padding: 1 0 2 60;
+}
+
+.timeLabelEmpty {
+  -fx-font-size: 10;
+  -fx-padding: 3 0 0 60;
+}
+
+.timeLabelDeparture {
+  -fx-font-size: 17;
+  -fx-text-fill: white;
+  -fx-padding: 1 0 35 60;
+}
+
+.timeLabelSwitch {
+  -fx-font-size: 17;
+  -fx-text-fill: white;
+  -fx-padding: 1 0 32 60;
 }

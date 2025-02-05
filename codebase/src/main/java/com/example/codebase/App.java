@@ -1,7 +1,9 @@
 package com.example.codebase;
 
 import com.example.codebase.Network.Edge;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,6 +27,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.geometry.Pos;
 import javafx.util.StringConverter;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 
 public class App extends Application {
 
@@ -406,12 +411,12 @@ public class App extends Application {
             LinkedList<Edge> route = tflNetwork.findRoute(srcStation.getValue(), destStation.getValue());
             System.out.println(route);
             System.out.println(tflNetwork.findLinesAlongRoute(route));
-            System.out.println(tflNetwork.findSubLinesAlongRoute(route));
             try {
               if (route.isEmpty()) {
                 throw new Exception("Departure and Arrival stations must be distinct");
               } else {
                 Platform.runLater(() -> {
+                  // generates the top title bar
                   HBox destinationMessageHBox = new HBox();
                   Label destinationMessage = new Label("Your Route to "+destStation.getValue().getName());
                   destinationMessageHBox.getChildren().add(destinationMessage);
@@ -431,6 +436,11 @@ public class App extends Application {
                   VBox stationsBox = new VBox();
                   HBox.setHgrow(stationsBox, Priority.ALWAYS);
                   stationsBox.setMaxWidth(Double.MAX_VALUE);
+
+                  // generating the two vboxes for the time and route box
+                  VBox timeBox = new VBox();
+                  VBox routeBox = new VBox();
+                  timeAndRouteBox.getChildren().addAll(timeBox, routeBox);
                   outerHbox.getChildren().addAll(timeAndRouteBox, stationsBox);
 
                   // generating the labels for the source station to be outputted on screen
@@ -441,6 +451,13 @@ public class App extends Application {
                   originLine.getStyleClass().add("boardLineName");
                   originLine.setStyle("-fx-background-color: "+lineColours.get(route.get(0).getLine()));
                   originBox.getChildren().addAll(originTitle, originLine);
+
+                  // generating the current time and route line for the source station
+                  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+                  String time = LocalTime.now().format(formatter);
+                  Label currentTimeLabel = new Label(time);
+                  currentTimeLabel.getStyleClass().addAll("timeLabelDeparture");
+                  timeBox.getChildren().add(currentTimeLabel);
 
                   // generating and adding the board line label
                   LinkedList<String> listSubLines = tflNetwork.findSubLinesAlongRoute(route);
@@ -453,15 +470,23 @@ public class App extends Application {
                   int edgeIterationCount = 0;
 
                   for(Edge edge : route) {
+                    String localTime = LocalTime.parse(time, formatter).plusMinutes(edge.travelTime).format(formatter);
                     edgeIterationCount++;
                     Label station = new Label(edge.getDestination().getName());
+                    currentLine = listSubLines.pop();
                     if (edgeIterationCount==route.size()){
                       station.getStyleClass().add("boardStationName");
                       stationsBox.getChildren().add(station);
+                      Label arrivalTime = new Label(localTime);
+                      arrivalTime.getStyleClass().addAll("timeLabelArrival");
+                      timeBox.getChildren().add(arrivalTime);
                     } else {
                       if (currentLine.equals(listSubLines.peek())) {
                         station.getStyleClass().add("intermediateStation");
                         stationsBox.getChildren().add(station);
+                        Label emptyTime = new Label();
+                        emptyTime.getStyleClass().add("timeLabelEmpty");
+                        timeBox.getChildren().add(emptyTime);
                       } else {
                         HBox switchBox = new HBox();
                         Label line = new Label(edge.getLine().toString());
@@ -472,21 +497,14 @@ public class App extends Application {
                         Label switchLines = new Label("Switch to "+listSubLines.peek()+" - "+edge.getDeparturePlatform());
                         switchLines.getStyleClass().add("boardLabel");
                         stationsBox.getChildren().addAll(switchBox, switchLines);
+                        Label switchTime = new Label(localTime);
+                        switchTime.getStyleClass().add("timeLabelSwitch");
+                        timeBox.getChildren().add(switchTime);
                       }
                     }
-                    System.out.println(listSubLines);
-                    currentLine = listSubLines.pop();
-
-
-
                   }
 
-
-
                   resultBox.getChildren().add(outerHbox);
-
-
-
 
                 });
 
