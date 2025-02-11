@@ -490,24 +490,38 @@ public class App extends Application {
                         emptyTime.getStyleClass().add("timeLabelEmpty");
                         timeBox.getChildren().add(emptyTime);
                       } else {
-                        HBox switchBox = new HBox();
-                        Label line = new Label(route.get(edgeIterationCount+1).getLine().toString());
-                        line.setStyle("-fx-background-color: "+lineColours.get(route.get(edgeIterationCount+1).getLine()));
-                        line.getStyleClass().add("boardLineName");
-                        station.getStyleClass().add("boardStationName");
-                        switchBox.getChildren().addAll(station, line);
-                        Label switchLines = new Label("Switch to "+listSubLines.peek()+" - "+edge.getDeparturePlatform());
-                        switchLines.getStyleClass().add("boardLabel");
-                        stationsBox.getChildren().addAll(switchBox, switchLines);
-                        Label switchTime = new Label(localTime);
-                        switchTime.getStyleClass().add("timeLabelSwitch");
-                        timeBox.getChildren().add(switchTime);
+                        if (edgeIterationCount + 1 < route.size()) {
+                          HBox switchBox = new HBox();
+                          Label line = new Label(route.get(edgeIterationCount+1).getLine().toString());
+                          line.setStyle("-fx-background-color: " + lineColours.get(route.get(edgeIterationCount+1).getLine()));
+                          line.getStyleClass().add("boardLineName");
+                          station.getStyleClass().add("boardStationName");
+                          switchBox.getChildren().addAll(station, line);
+                          Label switchLines = new Label("Switch to " + listSubLines.peek() + " - " + edge.getDeparturePlatform());
+                          switchLines.getStyleClass().add("boardLabel");
+                          stationsBox.getChildren().addAll(switchBox, switchLines);
+                          Label switchTime = new Label(localTime);
+                          switchTime.getStyleClass().add("timeLabelSwitch");
+                          timeBox.getChildren().add(switchTime);
+                        } else {
+                          // Special case: Last edge but a switch is needed.
+                          HBox switchBox = new HBox();
+                          Label line = new Label(edge.getLine().toString());
+                          line.setStyle("-fx-background-color: " + lineColours.get(edge.getLine()));
+                          line.getStyleClass().add("boardLineName");
+                          station.getStyleClass().add("boardStationName");
+                          switchBox.getChildren().addAll(station, line);
+                          Label switchLines = new Label("Switch to " + listSubLines.peek() + " - " + edge.getDeparturePlatform());
+                          switchLines.getStyleClass().add("boardLabel");
+                          stationsBox.getChildren().addAll(switchBox, switchLines);
+                          Label arrivalTime = new Label(localTime);
+                          arrivalTime.getStyleClass().addAll("timeLabelArrival");
+                          timeBox.getChildren().add(arrivalTime);
+                        }
                       }
                     }
                   }
-
                   resultBox.getChildren().add(outerHbox);
-
                 });
 
 
