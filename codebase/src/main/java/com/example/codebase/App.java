@@ -515,7 +515,7 @@ public class App extends Application {
                           switchLines.getStyleClass().add("boardLabel");
                           stationsBox.getChildren().addAll(switchBox, switchLines);
                           Label arrivalTime = new Label(localTime);
-                          arrivalTime.getStyleClass().addAll("timeLabelArrival");
+                          arrivalTime.getStyleClass().addAll("timeLabelSwitch");
                           timeBox.getChildren().add(arrivalTime);
                         }
                       }
