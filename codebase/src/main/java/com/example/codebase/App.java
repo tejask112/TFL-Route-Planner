@@ -1,8 +1,11 @@
 package com.example.codebase;
 
 import com.example.codebase.Network.Edge;
+import java.io.FileReader;
+import java.io.InputStream;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -26,9 +29,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.geometry.Pos;
+import javafx.util.Pair;
 import javafx.util.StringConverter;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+import com.opencsv.CSVReader;
+
 
 
 public class App extends Application {
@@ -38,8 +43,10 @@ public class App extends Application {
   }
 
   @Override
-  public void start(Stage stage) {
+  public void start(Stage stage) throws Exception {
     BorderPane root = new BorderPane();
+
+    System.out.println(returnNaptanFromCsv("Knightsbridge"));
 
     // ---------------------------- Top title bar ----------------------------
     HBox topBar = new HBox();
@@ -548,5 +555,30 @@ public class App extends Application {
     stage.setScene(scene);
     stage.show();
 
+  }
+
+  public static String returnNaptanFromCsv(String name) throws Exception{
+    String naptanCode = null;
+    try {
+      FileReader fr = new FileReader("src/main/resources/NAPTANcsv/naptan.csv");
+      CSVReader csvReader = new CSVReader(fr);
+      String[] nextRecord;
+
+
+      while ((nextRecord = csvReader.readNext()) != null) {
+        String undergroundName = nextRecord[1];
+        if ((name+" Underground Station").equals(undergroundName)) {
+          naptanCode = nextRecord[0].toString();
+          break;
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    if (naptanCode != null) {
+      return naptanCode;
+    } else {
+      throw new Exception("No NAPTAN code found for input");
+    }
   }
 }
