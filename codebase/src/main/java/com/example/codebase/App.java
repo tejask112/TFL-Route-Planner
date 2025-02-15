@@ -611,6 +611,7 @@ public class App extends Application {
         }
         in.close();
 
+        String towardsInput = subline.substring(line.length()+1, subline.length());
         JSONArray jsonArray = new JSONArray (content.toString());
         for (int i=0; i <jsonArray.length(); i++) {
           JSONObject object = jsonArray.getJSONObject(i);
@@ -618,9 +619,21 @@ public class App extends Application {
           platformAPI = platformAPI.substring(platformAPI.indexOf("-")+2);
           if (platformAPI.equals(platformInput)) {
             returnStats = object;
+            System.out.println("Train found from platform key");
             break;
           }
         }
+        if (returnStats == null) {
+          for (int i=0; i <jsonArray.length(); i++) {
+            JSONObject object = jsonArray.getJSONObject(i);
+            String towardsAPI = object.getString("towards");
+            if (towardsAPI.equals(towardsInput)) {
+              returnStats = object;
+              System.out.println("Train found from towards key");
+              break;
+            }
+          }
+      }
       }
       connection.disconnect();
     } catch (Exception exception) {
