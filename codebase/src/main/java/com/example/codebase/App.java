@@ -1,12 +1,13 @@
 package com.example.codebase;
 
 import com.example.codebase.Network.Edge;
+import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,11 +30,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.geometry.Pos;
-import javafx.util.Pair;
 import javafx.util.StringConverter;
 import java.time.LocalTime;
 import com.opencsv.CSVReader;
-
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 
 public class App extends Application {
@@ -46,7 +47,7 @@ public class App extends Application {
   public void start(Stage stage) throws Exception {
     BorderPane root = new BorderPane();
 
-    System.out.println(returnNaptanFromCsv("Knightsbridge"));
+    getTimeOfTrainArrival("940GZZLURYL", "Metropolitan","Metropolitan Aldgate" ,"Platform 1");
 
     // ---------------------------- Top title bar ----------------------------
     HBox topBar = new HBox();
@@ -459,17 +460,34 @@ public class App extends Application {
                   originLine.setStyle("-fx-background-color: "+lineColours.get(route.get(0).getLine()));
                   originBox.getChildren().addAll(originTitle, originLine);
 
-                  // generating the current time and route line for the source station
-                  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-                  LocalTime currentTime = LocalTime.now();
-                  String initialTime = LocalTime.now().format(formatter);
-                  Label currentTimeLabel = new Label(initialTime);
-                  currentTimeLabel.getStyleClass().addAll("timeLabelDeparture");
-                  timeBox.getChildren().add(currentTimeLabel);
-
-                  // generating and adding the board line label
+                  // generating the sublines
                   LinkedList<String> listSubLines = tflNetwork.findSubLinesAlongRoute(route);
-                  Label boardLabel = new Label("Board "+listSubLines.get(0)+" - "+route.get(0).getDeparturePlatform());
+
+                  // handling the TFL API call for the first train to take
+                  JSONObject departureJson = new JSONObject();
+                  try {
+                    departureJson = getTimeOfTrainArrival(returnNaptanFromCsv(srcStation.getValue().getName()), route.get(0).getLine().toString(), listSubLines.peek(), route.get(0).getDeparturePlatform());
+                  } catch (Exception ex) {
+                    Platform.runLater(() -> {
+                      errorLabel.setText(ex.getMessage());
+                    });
+                  }
+                  String platformName = departureJson.getString("platformName");
+                  String expectedArrival = departureJson.getString("expectedArrival");
+                  expectedArrival = expectedArrival.substring(expectedArrival.indexOf('T') + 1);
+                  expectedArrival = expectedArrival.substring(0, 5);
+
+                  // generating the time label for when the first train arrives
+                  Label departureTimeLabel = new Label(expectedArrival);
+                  departureTimeLabel.getStyleClass().addAll("timeLabelDeparture");
+                  timeBox.getChildren().add(departureTimeLabel);
+
+                  // converting the departure time to time
+                  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+                  LocalTime currentTime = LocalTime.parse(expectedArrival);
+
+                  // generating the label instructing user to board subline at which platform.
+                  Label boardLabel = new Label("Board "+listSubLines.get(0)+" |  "+platformName);
                   boardLabel.getStyleClass().add("boardLabel");
                   stationsBox.getChildren().add(originBox);
                   stationsBox.getChildren().add(boardLabel);
@@ -497,34 +515,24 @@ public class App extends Application {
                         emptyTime.getStyleClass().add("timeLabelEmpty");
                         timeBox.getChildren().add(emptyTime);
                       } else {
+                        Label line = new Label();
                         if (edgeIterationCount + 1 < route.size()) {
-                          HBox switchBox = new HBox();
-                          Label line = new Label(route.get(edgeIterationCount+1).getLine().toString());
-                          line.setStyle("-fx-background-color: " + lineColours.get(route.get(edgeIterationCount+1).getLine()));
-                          line.getStyleClass().add("boardLineName");
-                          station.getStyleClass().add("boardStationName");
-                          switchBox.getChildren().addAll(station, line);
-                          Label switchLines = new Label("Switch to " + listSubLines.peek() + " - " + edge.getDeparturePlatform());
-                          switchLines.getStyleClass().add("boardLabel");
-                          stationsBox.getChildren().addAll(switchBox, switchLines);
-                          Label switchTime = new Label(localTime);
-                          switchTime.getStyleClass().add("timeLabelSwitch");
-                          timeBox.getChildren().add(switchTime);
+                          line.setText(route.get(edgeIterationCount+1).getLine().toString());
                         } else {
                           // Special case: Last edge but a switch is needed.
-                          HBox switchBox = new HBox();
-                          Label line = new Label(edge.getLine().toString());
-                          line.setStyle("-fx-background-color: " + lineColours.get(edge.getLine()));
-                          line.getStyleClass().add("boardLineName");
-                          station.getStyleClass().add("boardStationName");
-                          switchBox.getChildren().addAll(station, line);
-                          Label switchLines = new Label("Switch to " + listSubLines.peek() + " - " + edge.getDeparturePlatform());
-                          switchLines.getStyleClass().add("boardLabel");
-                          stationsBox.getChildren().addAll(switchBox, switchLines);
-                          Label arrivalTime = new Label(localTime);
-                          arrivalTime.getStyleClass().addAll("timeLabelSwitch");
-                          timeBox.getChildren().add(arrivalTime);
+                          line.setText(edge.getLine().toString());
                         }
+                        HBox switchBox = new HBox();
+                        line.setStyle("-fx-background-color: " + lineColours.get(edge.getLine()));
+                        line.getStyleClass().add("boardLineName");
+                        station.getStyleClass().add("boardStationName");
+                        switchBox.getChildren().addAll(station, line);
+                        Label switchLines = new Label("Switch to " + listSubLines.peek() + " |  " + edge.getDeparturePlatform());
+                        switchLines.getStyleClass().add("boardLabel");
+                        stationsBox.getChildren().addAll(switchBox, switchLines);
+                        Label arrivalTime = new Label(localTime);
+                        arrivalTime.getStyleClass().addAll("timeLabelSwitch");
+                        timeBox.getChildren().add(arrivalTime);
                       }
                     }
                   }
@@ -578,7 +586,46 @@ public class App extends Application {
     if (naptanCode != null) {
       return naptanCode;
     } else {
-      throw new Exception("No NAPTAN code found for input");
+      throw new Exception("System Error - No NAPTAN code found");
     }
+  }
+
+  public static JSONObject getTimeOfTrainArrival(String naptan, String line, String subline, String platformInput) {
+    JSONObject returnStats = new JSONObject();
+    try {
+      String urlString = "https://api.tfl.gov.uk/Line/" + line.toLowerCase() + "/Arrivals/" + naptan;
+      URL url = new URL(urlString);
+      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+      //Request Headers from the API
+      connection.setRequestProperty("Cache-Control", "no-cache");
+      connection.setRequestMethod("GET");
+      int status = connection.getResponseCode();
+
+      if (status == 200) {
+        BufferedReader in = new BufferedReader(new InputStreamReader((connection.getInputStream())));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+          content.append(inputLine);
+        }
+        in.close();
+
+        JSONArray jsonArray = new JSONArray (content.toString());
+        for (int i=0; i <jsonArray.length(); i++) {
+          JSONObject object = jsonArray.getJSONObject(i);
+          String platformAPI = object.getString("platformName");
+          platformAPI = platformAPI.substring(platformAPI.indexOf("-")+2);
+          if (platformAPI.equals(platformInput)) {
+            returnStats = object;
+            break;
+          }
+        }
+      }
+      connection.disconnect();
+    } catch (Exception exception) {
+      System.out.print("exception:" + exception.getMessage());
+    }
+    return returnStats;
   }
 }
