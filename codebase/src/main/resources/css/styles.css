@@ -130,24 +130,38 @@
 .timeLabelArrival {
   -fx-font-size: 17;
   -fx-text-fill: white;
-  -fx-padding: 1 0 2 60;
+  -fx-padding: 1 0 2 90;
+
 }
 
 .timeLabelEmpty {
   -fx-font-size: 10;
   -fx-padding: 3 0 0 60;
+
 }
 
 .timeLabelDeparture {
   -fx-font-size: 17;
   -fx-text-fill: white;
-  -fx-padding: 1 0 35 60;
+  -fx-padding: 1 0 35 0;
 }
 
 .timeLabelSwitch {
   -fx-font-size: 17;
   -fx-text-fill: white;
   -fx-padding: 1 0 32 60;
+
+}
+
+.trainDepartureButton {
+  -fx-background-color: #2F3136;
+  -fx-text-fill: #FFFFFF;
+  -fx-border-color: #44474d;
+  -fx-border-radius: 8px;
+}
+
+.trainDepartureButtonBox {
+  -fx-padding: 1 10 32 10;
 }
 
 .userInputBox {

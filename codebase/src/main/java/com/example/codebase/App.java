@@ -438,7 +438,7 @@ public class App extends Application {
                   // generating the outerHbox which contains the station lines and station descriptions
                   HBox outerHbox = new HBox();
                   VBox timeAndRouteBox = new VBox();
-                  timeAndRouteBox.setPrefWidth(150);
+                  timeAndRouteBox.setPrefWidth(165);
                   VBox stationsBox = new VBox();
                   HBox.setHgrow(stationsBox, Priority.ALWAYS);
                   stationsBox.setMaxWidth(Double.MAX_VALUE);
@@ -446,6 +446,7 @@ public class App extends Application {
                   // generating the two vboxes for the time and route box
                   VBox timeBox = new VBox();
                   VBox routeBox = new VBox();
+                  routeBox.setPrefWidth(25);
                   timeAndRouteBox.getChildren().addAll(timeBox, routeBox);
                   outerHbox.getChildren().addAll(timeAndRouteBox, stationsBox);
 
@@ -460,6 +461,15 @@ public class App extends Application {
 
                   // generating the sublines
                   LinkedList<String> listSubLines = tflNetwork.findSubLinesAlongRoute(route);
+
+                  // generate button to view other lines to take
+                  HBox innerTimeLabel = new HBox();
+                  VBox buttonBox = new VBox();
+                  Button viewNextTrainsAtDeparture = new Button("See Trains");
+                  viewNextTrainsAtDeparture.getStyleClass().add("trainDepartureButton");
+                  buttonBox.getStyleClass().add("trainDepartureButtonBox");
+                  buttonBox.getChildren().add(viewNextTrainsAtDeparture);
+                  innerTimeLabel.getChildren().add(buttonBox);
 
                   // handling the TFL API call for the first train to take
                   JSONObject departureJson = new JSONObject();
@@ -477,8 +487,10 @@ public class App extends Application {
 
                   // generating the time label for when the first train arrives
                   Label departureTimeLabel = new Label(expectedArrival);
+
                   departureTimeLabel.getStyleClass().addAll("timeLabelDeparture");
-                  timeBox.getChildren().add(departureTimeLabel);
+                  innerTimeLabel.getChildren().add(departureTimeLabel);
+                  timeBox.getChildren().add(innerTimeLabel);
 
                   // converting the departure time to time
                   DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -491,7 +503,7 @@ public class App extends Application {
                   } else {
                     departureSubline = route.get(0).getLine().toString() + " " + departureJson.getString("towards");
                   }
-                  Label boardLabel = new Label("Board "+ departureSubline +" |  "+platformName);
+                  Label boardLabel = new Label("Board "+ departureSubline +" | "+platformName);
                   boardLabel.getStyleClass().add("boardLabel");
                   stationsBox.getChildren().add(originBox);
                   stationsBox.getChildren().add(boardLabel);
@@ -531,7 +543,7 @@ public class App extends Application {
                         line.getStyleClass().add("boardLineName");
                         station.getStyleClass().add("boardStationName");
                         switchBox.getChildren().addAll(station, line);
-                        Label switchLines = new Label("Switch to " + listSubLines.peek() + " |  " + edge.getTravellingDirection());
+                        Label switchLines = new Label("Switch to " + listSubLines.peek() + " | " + edge.getTravellingDirection());
                         switchLines.getStyleClass().add("boardLabel");
                         stationsBox.getChildren().addAll(switchBox, switchLines);
                         Label arrivalTime = new Label(localTime);
