@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,8 +47,6 @@ public class App extends Application {
   @Override
   public void start(Stage stage) throws Exception {
     BorderPane root = new BorderPane();
-
-    getTimeOfTrainArrival("940GZZLURYL", "Metropolitan","Metropolitan Aldgate" ,"Platform 1");
 
     // ---------------------------- Top title bar ----------------------------
     HBox topBar = new HBox();
@@ -486,7 +485,13 @@ public class App extends Application {
                   LocalTime currentTime = LocalTime.parse(expectedArrival);
 
                   // generating the label instructing user to board subline at which platform.
-                  Label boardLabel = new Label("Board "+listSubLines.get(0)+" |  "+platformName);
+                  String departureSubline = null;
+                  if (departureJson.getString("towards").equals("Check Front of Train")) {
+                    departureSubline = listSubLines.get(0);
+                  } else {
+                    departureSubline = route.get(0).getLine().toString() + " " + departureJson.getString("towards");
+                  }
+                  Label boardLabel = new Label("Board "+ departureSubline +" |  "+platformName);
                   boardLabel.getStyleClass().add("boardLabel");
                   stationsBox.getChildren().add(originBox);
                   stationsBox.getChildren().add(boardLabel);
@@ -590,7 +595,7 @@ public class App extends Application {
   }
 
   public static JSONObject getTimeOfTrainArrival(String naptan, String line, String subline, String platformInput) {
-    JSONObject returnStats = new JSONObject();
+    JSONObject returnStats = null;
     try {
       String urlString = "https://api.tfl.gov.uk/Line/" + line.toLowerCase() + "/Arrivals/" + naptan;
       URL url = new URL(urlString);
@@ -601,7 +606,9 @@ public class App extends Application {
       connection.setRequestMethod("GET");
       int status = connection.getResponseCode();
 
+      // ensures a valid status/connection
       if (status == 200) {
+        // reads the API response
         BufferedReader in = new BufferedReader(new InputStreamReader((connection.getInputStream())));
         String inputLine;
         StringBuffer content = new StringBuffer();
@@ -609,30 +616,41 @@ public class App extends Application {
           content.append(inputLine);
         }
         in.close();
+        display(new JSONArray(content.toString()));
 
+        // modifies the method argument to remove the name of the line
         String towardsInput = subline.substring(line.length()+1, subline.length());
+
+        // filters the API response by the direction the user is travelling (ie, westbound, eastbound etc)
         JSONArray jsonArray = new JSONArray (content.toString());
-        for (int i=0; i <jsonArray.length(); i++) {
+        List<JSONObject> filteredByDirection = new ArrayList<>();
+        for (int i=0; i<jsonArray.length(); i++) {
           JSONObject object = jsonArray.getJSONObject(i);
           String platformAPI = object.getString("platformName");
           platformAPI = platformAPI.substring(0, platformAPI.indexOf("-")-1);
-          if (platformAPI.equals(platformInput)) {
+          if (platformInput.equals(platformAPI)) {
+            filteredByDirection.add(object);
+          }
+        }
+
+        // sorts the filtered array by the time to station attribute
+        filteredByDirection.sort(Comparator.comparingInt(obj -> obj.getInt("timeToStation")));
+        JSONArray sortedByDirection = new JSONArray(filteredByDirection);
+        display(sortedByDirection);
+
+        // finds the optimal earliest subline to take
+        for (int i=0; i<sortedByDirection.length(); i++) {
+          JSONObject object = sortedByDirection.getJSONObject(i);
+          String towardsObj = object.getString("towards");
+          if (towardsObj.equals(towardsInput) || towardsObj.equals("Check Front of Train")) {
             returnStats = object;
-            System.out.println("Train found from platform key");
             break;
           }
         }
-        if (returnStats == null) {
-          for (int i=0; i <jsonArray.length(); i++) {
-            JSONObject object = jsonArray.getJSONObject(i);
-            String towardsAPI = object.getString("towards");
-            if (towardsAPI.equals(towardsInput)) {
-              returnStats = object;
-              System.out.println("Train found from towards key");
-              break;
-            }
-          }
-      }
+
+        if (returnStats==null){
+          returnStats = (JSONObject) sortedByDirection.get(0);
+        }
       }
       connection.disconnect();
     } catch (Exception exception) {
@@ -640,4 +658,25 @@ public class App extends Application {
     }
     return returnStats;
   }
+
+  public static void display(JSONArray arr) {
+    System.out.println("+---------------------------+------------+---------------------+----------------------+------------------+");
+    System.out.println("| Platform                 | Vehicle ID | Towards             | Time to Station (s)  | Expected Arrival |");
+    System.out.println("+---------------------------+------------+---------------------+----------------------+------------------+");
+    for (int i = 0; i < arr.length(); i++) {
+      JSONObject object = arr.getJSONObject(i);
+      String platformAPI = object.getString("platformName");
+      String vehicleId = object.getString("vehicleId");
+      String towards = object.optString("towards", "Unknown"); // Handle missing "towards"
+      int timeToStation = object.getInt("timeToStation");
+      String expectedArrival = object.getString("expectedArrival");
+      // Print row in formatted table
+      System.out.printf("| %-25s | %-10s | %-19s | %-20d | %-16s |\n",
+          platformAPI, vehicleId, towards, timeToStation, expectedArrival);
+    }
+    System.out.println("+---------------------------+------------+---------------------+----------------------+------------------+");
+
+  }
+
+
 }
