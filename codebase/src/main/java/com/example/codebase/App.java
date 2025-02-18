@@ -22,7 +22,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -512,7 +511,7 @@ public class App extends Application {
                   String currentLine = listSubLines.peek();
                   int edgeIterationCount = 0;
 
-                  viewNextTrainsAtDeparture.setOnAction(event -> displayTrains());
+                  viewNextTrainsAtDeparture.setOnAction(event -> displayTrains(srcStation.getValue().getName(), route.get(0).getLine().toString(), listSubLines.peek(), route.get(0).getTravellingDirection()));
 
                   for(Edge edge : route) {
                     currentTime = currentTime.plusMinutes(edge.getTravelTime());
@@ -636,17 +635,8 @@ public class App extends Application {
         // modifies the method argument to remove the name of the line
         String towardsInput = subline.substring(line.length()+1, subline.length());
 
-        // filters the API response by the direction the user is travelling (ie, westbound, eastbound etc)
         JSONArray jsonArray = new JSONArray (content.toString());
-        List<JSONObject> filteredByDirection = new ArrayList<>();
-        for (int i=0; i<jsonArray.length(); i++) {
-          JSONObject object = jsonArray.getJSONObject(i);
-          String platformAPI = object.getString("platformName");
-          platformAPI = platformAPI.substring(0, platformAPI.indexOf("-")-1);
-          if (platformInput.equals(platformAPI)) {
-            filteredByDirection.add(object);
-          }
-        }
+        List<JSONObject> filteredByDirection = filterJSONresponse(jsonArray, platformInput);
 
         // sorts the filtered array by the time to station attribute
         filteredByDirection.sort(Comparator.comparingInt(obj -> obj.getInt("timeToStation")));
@@ -674,6 +664,20 @@ public class App extends Application {
     return returnStats;
   }
 
+  public static List<JSONObject> filterJSONresponse(JSONArray jsonArray, String platformInput) {
+    // filters the API response by the direction the user is travelling (ie, westbound, eastbound etc)
+    List<JSONObject> filteredByDirection = new ArrayList<>();
+    for (int i=0; i<jsonArray.length(); i++) {
+      JSONObject object = jsonArray.getJSONObject(i);
+      String platformAPI = object.getString("platformName");
+      platformAPI = platformAPI.substring(0, platformAPI.indexOf("-")-1);
+      if (platformInput.equals(platformAPI)) {
+        filteredByDirection.add(object);
+      }
+    }
+    return filteredByDirection;
+  }
+
   public static void display(JSONArray arr) {
     System.out.println("+---------------------------+------------+---------------------+----------------------+------------------+");
     System.out.println("| Platform                 | Vehicle ID | Towards             | Time to Station (s)  | Expected Arrival |");
@@ -692,11 +696,40 @@ public class App extends Application {
     System.out.println("+---------------------------+------------+---------------------+----------------------+------------------+");
   }
 
-  public static void displayTrains() {
+  public static void displayTrains(String naptan, String line, String subline, String platformInput) {
     BorderPane root = new BorderPane();
     Stage displayTrainsStage = new Stage();
     Scene scene = new Scene(root, 600, 275);
     root.getStyleClass().add("resultsBox");
+
+    // get API's response
+    try {
+      String urlString =
+          "https://api.tfl.gov.uk/Line/" + line.toLowerCase() + "/Arrivals/" + naptan;
+      URL url = new URL(urlString);
+      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+      //Request Headers from the API
+      connection.setRequestProperty("Cache-Control", "no-cache");
+      connection.setRequestMethod("GET");
+
+      // read the response
+      BufferedReader in = new BufferedReader(new InputStreamReader((connection.getInputStream())));
+      String inputLine;
+      StringBuffer content = new StringBuffer();
+      while ((inputLine = in.readLine()) != null) {
+        content.append(inputLine);
+      }
+      in.close();
+
+      // modifies the method argument to remove the name of the line
+      String towardsInput = subline.substring(line.length()+1, subline.length());
+      JSONArray jsonArray = new JSONArray (content.toString());
+      List<JSONObject> filteredByDirection = filterJSONresponse(jsonArray, platformInput);
+
+    } catch (Exception exception) {
+      System.out.print("exception:" + exception.getMessage());
+    }
+
     displayTrainsStage.setScene(scene);
     scene.getStylesheets().add(App.class.getResource("/css/styles.css").toExternalForm());
     displayTrainsStage.setTitle("Live Departure Train Times");
