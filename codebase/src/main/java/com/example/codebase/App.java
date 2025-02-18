@@ -22,6 +22,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -238,7 +239,7 @@ public class App extends Application {
     tflNetwork.addEdge(LiverpoolStreet, Moorgate, Metropolitan, 3, "Westbound", new ArrayList<>(List.of("Metropolitan Uxbridge", "Metropolitan Amersham", "Metropolitan Chesham", "Metropolitan Watford")));
     tflNetwork.addEdge(LiverpoolStreet, Aldgate, Metropolitan, 2, "Eastbound", new ArrayList<>(List.of("Metropolitan Aldgate")));
     tflNetwork.addEdge(Aldgate, LiverpoolStreet, Metropolitan, 2, "Westbound", new ArrayList<>(List.of("Metropolitan Uxbridge", "Metropolitan Amersham", "Metropolitan Chesham", "Metropolitan Watford")));
-    tflNetwork.addEdge(HarrowOnTheHill, WestHarrow, Metropolitan, 2, "Westbound", new ArrayList<>(List.of("Metropolitan Uxbridge")));
+    tflNetwork.addEdge(HarrowOnTheHill, WestHarrow, Metropolitan, 2, "Northbound", new ArrayList<>(List.of("Metropolitan Uxbridge")));
     tflNetwork.addEdge(WestHarrow, HarrowOnTheHill, Metropolitan, 2, "Eastbound", new ArrayList<>(List.of("Metropolitan Aldgate")));
     tflNetwork.addEdge(WestHarrow, RaynersLane, Metropolitan, 2, "Westbound", new ArrayList<>(List.of("Metropolitan Uxbridge")));
     tflNetwork.addEdge(RaynersLane, WestHarrow, Metropolitan, 2, "Eastbound", new ArrayList<>(List.of("Metropolitan Aldgate")));
@@ -465,7 +466,7 @@ public class App extends Application {
                   // generate button to view other lines to take
                   HBox innerTimeLabel = new HBox();
                   VBox buttonBox = new VBox();
-                  Button viewNextTrainsAtDeparture = new Button("See Trains");
+                  Button viewNextTrainsAtDeparture = new Button("Live Times");
                   viewNextTrainsAtDeparture.getStyleClass().add("trainDepartureButton");
                   buttonBox.getStyleClass().add("trainDepartureButtonBox");
                   buttonBox.getChildren().add(viewNextTrainsAtDeparture);
@@ -510,6 +511,8 @@ public class App extends Application {
                   System.out.println(listSubLines);
                   String currentLine = listSubLines.peek();
                   int edgeIterationCount = 0;
+
+                  viewNextTrainsAtDeparture.setOnAction(event -> displayTrains());
 
                   for(Edge edge : route) {
                     currentTime = currentTime.plusMinutes(edge.getTravelTime());
@@ -687,7 +690,17 @@ public class App extends Application {
           platformAPI, vehicleId, towards, timeToStation, expectedArrival);
     }
     System.out.println("+---------------------------+------------+---------------------+----------------------+------------------+");
+  }
 
+  public static void displayTrains() {
+    BorderPane root = new BorderPane();
+    Stage displayTrainsStage = new Stage();
+    Scene scene = new Scene(root, 600, 275);
+    root.getStyleClass().add("resultsBox");
+    displayTrainsStage.setScene(scene);
+    scene.getStylesheets().add(App.class.getResource("/css/styles.css").toExternalForm());
+    displayTrainsStage.setTitle("Live Departure Train Times");
+    displayTrainsStage.show();
   }
 
 

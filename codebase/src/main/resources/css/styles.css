@@ -160,6 +160,16 @@
   -fx-border-radius: 8px;
 }
 
+.trainDepartureButton:hover {
+  -fx-background-color: #3A3D42;
+  -fx-border-color: #5865F2;
+}
+
+trainDepartureButton:pressed {
+  -fx-background-color: #17171a;
+  -fx-border-color: #4752C4;
+}
+
 .trainDepartureButtonBox {
   -fx-padding: 1 10 32 10;
 }
