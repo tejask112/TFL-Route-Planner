@@ -511,7 +511,13 @@ public class App extends Application {
                   String currentLine = listSubLines.peek();
                   int edgeIterationCount = 0;
 
-                  viewNextTrainsAtDeparture.setOnAction(event -> displayTrains(srcStation.getValue().getName(), route.get(0).getLine().toString(), listSubLines.peek(), route.get(0).getTravellingDirection()));
+                  viewNextTrainsAtDeparture.setOnAction(event -> {
+                    try {
+                      displayTrains(returnNaptanFromCsv(srcStation.getValue().getName()), route.get(0).getLine().toString(), route.get(0).getTravellingDirection());
+                    } catch (Exception ex) {
+                      throw new RuntimeException(ex);
+                    }
+                  });
 
                   for(Edge edge : route) {
                     currentTime = currentTime.plusMinutes(edge.getTravelTime());
@@ -696,44 +702,61 @@ public class App extends Application {
     System.out.println("+---------------------------+------------+---------------------+----------------------+------------------+");
   }
 
-  public static void displayTrains(String naptan, String line, String subline, String platformInput) {
+  public static void displayTrains(String naptan, String line, String platformInput) {
     BorderPane root = new BorderPane();
     Stage displayTrainsStage = new Stage();
     Scene scene = new Scene(root, 600, 275);
     root.getStyleClass().add("resultsBox");
 
-    // get API's response
-    try {
-      String urlString =
-          "https://api.tfl.gov.uk/Line/" + line.toLowerCase() + "/Arrivals/" + naptan;
-      URL url = new URL(urlString);
-      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-      //Request Headers from the API
-      connection.setRequestProperty("Cache-Control", "no-cache");
-      connection.setRequestMethod("GET");
+    VBox liveTimesContainer = new VBox(10);
+    liveTimesContainer.setStyle("-fx-padding: 15; -fx-alignment: center-left;"); // Adds spacing & alignment
 
-      // read the response
-      BufferedReader in = new BufferedReader(new InputStreamReader((connection.getInputStream())));
-      String inputLine;
-      StringBuffer content = new StringBuffer();
-      while ((inputLine = in.readLine()) != null) {
-        content.append(inputLine);
-      }
-      in.close();
+    String apiResponse = String.valueOf(retrieveNextTrainFromAPI(naptan, line));
+    // Modify method argument to remove the name of the line#
+    JSONArray jsonArray = new JSONArray(apiResponse);
+    List<JSONObject> filteredByDirection = filterJSONresponse(jsonArray, platformInput);
 
-      // modifies the method argument to remove the name of the line
-      String towardsInput = subline.substring(line.length()+1, subline.length());
-      JSONArray jsonArray = new JSONArray (content.toString());
-      List<JSONObject> filteredByDirection = filterJSONresponse(jsonArray, platformInput);
+    for (JSONObject object : filteredByDirection) {
+      String platformName = object.getString("platformName");
+      String towards = object.optString("towards", "Unknown");
+      int timeToStation = object.getInt("timeToStation");
 
-    } catch (Exception exception) {
-      System.out.print("exception:" + exception.getMessage());
+      Label liveTimes = new Label(platformName + "   Towards: " + towards + " | " + timeToStation + "s");
+      liveTimes.getStyleClass().add("liveTimes");
+      liveTimesContainer.getChildren().add(liveTimes);
     }
+    root.setCenter(liveTimesContainer);
 
     displayTrainsStage.setScene(scene);
     scene.getStylesheets().add(App.class.getResource("/css/styles.css").toExternalForm());
     displayTrainsStage.setTitle("Live Departure Train Times");
     displayTrainsStage.show();
+  }
+
+  private static StringBuilder retrieveNextTrainFromAPI (String naptan, String line) {
+    StringBuilder content = new StringBuilder();
+    try {
+      String urlString = "https://api.tfl.gov.uk/Line/" + line.toLowerCase() + "/Arrivals/" + naptan;
+      URL url = new URL(urlString);
+      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+      // Request Headers from the API
+      connection.setRequestProperty("Cache-Control", "no-cache");
+      connection.setRequestMethod("GET");
+
+      // Read the response
+      BufferedReader in = new BufferedReader(new InputStreamReader((connection.getInputStream())));
+      String inputLine;
+      while ((inputLine = in.readLine()) != null) {
+        content.append(inputLine);
+      }
+      in.close();
+      connection.disconnect();
+
+    } catch (Exception exception) {
+      System.out.println("Exception: " + exception.getMessage());
+    }
+    return content;
   }
 
 
