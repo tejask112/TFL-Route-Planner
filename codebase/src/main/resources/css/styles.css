@@ -1,4 +1,12 @@
 
+
+.arrivalBoardPageTitle {
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-padding: 0px 10px 15px 0px;
+  -fx-font-size: 20px;
+}
+
 .arrivalLabel {
   -fx-text-fill: white;
   -fx-font-size: 17;
@@ -31,6 +39,12 @@
   -fx-text-fill: white;
   -fx-font-size: 19px;
   -fx-padding: 40 40 20 40;
+}
+
+.displayedTrainTimes {
+  -fx-text-fill: white;
+  -fx-font-size: 14px;
+
 }
 
 .intermediateStation {

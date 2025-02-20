@@ -161,6 +161,14 @@ public class Network {
     return lines;
   }
 
+  public LinkedList<ArrayList<String>> findAllSublinesAlongRoute(LinkedList<Edge> route) {
+    LinkedList<ArrayList<String>> allSublines = new LinkedList<>();
+    for (Edge edge : route) {
+      allSublines.add(edge.getSubLines());
+    }
+    return allSublines;
+  }
+
   public LinkedList<String> findSubLinesAlongRoute(LinkedList<Edge> route) {
     LinkedList<String> finalSubLineList = new LinkedList<>();
     Map<String, Boolean> subLinesMap = new HashMap<>();

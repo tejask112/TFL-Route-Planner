@@ -459,6 +459,9 @@ public class App extends Application {
                   originLine.setStyle("-fx-background-color: "+lineColours.get(route.get(0).getLine()));
                   originBox.getChildren().addAll(originTitle, originLine);
 
+                  LinkedList<ArrayList<String>> allSublines = tflNetwork.findAllSublinesAlongRoute(route);
+                  System.out.println(allSublines);
+
                   // generating the sublines
                   LinkedList<String> listSubLines = tflNetwork.findSubLinesAlongRoute(route);
 
@@ -513,7 +516,7 @@ public class App extends Application {
 
                   viewNextTrainsAtDeparture.setOnAction(event -> {
                     try {
-                      displayTrains(returnNaptanFromCsv(srcStation.getValue().getName()), route.get(0).getLine().toString(), route.get(0).getTravellingDirection());
+                      displayTrains(srcStation.getValue().getName(), returnNaptanFromCsv(srcStation.getValue().getName()), route.get(0).getLine().toString(), route.get(0).getTravellingDirection(), lineColours.get(route.get(0).getLine()));
                     } catch (Exception ex) {
                       throw new RuntimeException(ex);
                     }
@@ -702,28 +705,47 @@ public class App extends Application {
     System.out.println("+---------------------------+------------+---------------------+----------------------+------------------+");
   }
 
-  public static void displayTrains(String naptan, String line, String platformInput) {
+  public static void displayTrains(String station, String naptan, String line, String platformInput, String lineColour) {
     BorderPane root = new BorderPane();
     Stage displayTrainsStage = new Stage();
     Scene scene = new Scene(root, 600, 275);
     root.getStyleClass().add("resultsBox");
 
     VBox liveTimesContainer = new VBox(10);
-    liveTimesContainer.setStyle("-fx-padding: 15; -fx-alignment: center-left;"); // Adds spacing & alignment
+    liveTimesContainer.setStyle("-fx-padding: 15; -fx-alignment: top-left;");
+
+    Label pageTitle = new Label(station + " | Arrival Board");
+    pageTitle.getStyleClass().add("arrivalBoardPageTitle");
+    Label lineImage = new Label(line);
+    lineImage.getStyleClass().add("boardLineName");
+    lineImage.setStyle("-fx-background-color: "+lineColour);
+
+    HBox topBar = new HBox(pageTitle, lineImage);
+
+    liveTimesContainer.getChildren().add(topBar);
 
     String apiResponse = String.valueOf(retrieveNextTrainFromAPI(naptan, line));
     // Modify method argument to remove the name of the line#
     JSONArray jsonArray = new JSONArray(apiResponse);
     List<JSONObject> filteredByDirection = filterJSONresponse(jsonArray, platformInput);
+    filteredByDirection.sort(Comparator.comparingInt(obj -> obj.getInt("timeToStation")));
 
     for (JSONObject object : filteredByDirection) {
       String platformName = object.getString("platformName");
       String towards = object.optString("towards", "Unknown");
       int timeToStation = object.getInt("timeToStation");
 
-      Label liveTimes = new Label(platformName + "   Towards: " + towards + " | " + timeToStation + "s");
-      liveTimes.getStyleClass().add("liveTimes");
-      liveTimesContainer.getChildren().add(liveTimes);
+      Label trainInfo = new Label(platformName + ", Towards: " + towards + " | Arriving in: ");
+      Label trainArrivalCountdown = new Label(Integer.toString(timeToStation));
+      Label trainSeconds = new Label(" seconds");
+
+      HBox trainArrivalInfo = new HBox();
+      trainArrivalInfo.getChildren().addAll(trainInfo, trainArrivalCountdown, trainSeconds);
+
+      trainInfo.getStyleClass().add("displayedTrainTimes");
+      trainArrivalCountdown.getStyleClass().add("displayedTrainTimes");
+      trainSeconds.getStyleClass().add("displayedTrainTimes");
+      liveTimesContainer.getChildren().add(trainArrivalInfo);
     }
     root.setCenter(liveTimesContainer);
 
