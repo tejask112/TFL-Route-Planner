@@ -459,6 +459,7 @@ public class App extends Application {
                   originLine.setStyle("-fx-background-color: "+lineColours.get(route.get(0).getLine()));
                   originBox.getChildren().addAll(originTitle, originLine);
 
+                  // generated all the sublines along a route
                   LinkedList<ArrayList<String>> allSublines = tflNetwork.findAllSublinesAlongRoute(route);
                   System.out.println(allSublines);
 
@@ -545,12 +546,13 @@ public class App extends Application {
                         Label line = new Label();
                         if (edgeIterationCount + 1 < route.size()) {
                           line.setText(route.get(edgeIterationCount+1).getLine().toString());
+                          line.setStyle("-fx-background-color: " + lineColours.get(route.get(edgeIterationCount+1).getLine()));
                         } else {
                           // Special case: Last edge but a switch is needed.
                           line.setText(edge.getLine().toString());
+                          line.setStyle("-fx-background-color: " + lineColours.get(edge.getLine()));
                         }
                         HBox switchBox = new HBox();
-                        line.setStyle("-fx-background-color: " + lineColours.get(edge.getLine()));
                         line.getStyleClass().add("boardLineName");
                         station.getStyleClass().add("boardStationName");
                         switchBox.getChildren().addAll(station, line);

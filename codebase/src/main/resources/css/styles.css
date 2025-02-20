@@ -149,7 +149,7 @@
 .timeLabelArrival {
   -fx-font-size: 17;
   -fx-text-fill: white;
-  -fx-padding: 1 0 2 90;
+  -fx-padding: 1 0 2 92;
 
 }
 
@@ -168,7 +168,7 @@
 .timeLabelSwitch {
   -fx-font-size: 17;
   -fx-text-fill: white;
-  -fx-padding: 1 0 32 60;
+  -fx-padding: 1 0 32 92;
 
 }
 
