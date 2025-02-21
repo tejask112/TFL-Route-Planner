@@ -712,7 +712,7 @@ public class App extends Application {
   public static void displayTrains(String station, String naptan, String line, String platformInput, String lineColour) {
     BorderPane root = new BorderPane();
     Stage displayTrainsStage = new Stage();
-    Scene scene = new Scene(root, 600, 275);
+    Scene scene = new Scene(root, 900, 275);
     root.getStyleClass().add("resultsBox");
 
     VBox liveTimesContainer = new VBox(10);
@@ -728,6 +728,25 @@ public class App extends Application {
 
     liveTimesContainer.getChildren().add(topBar);
 
+    HBox liveTimesHeading = new HBox();
+    Label platformHeading = new Label("Platform");
+    platformHeading.getStyleClass().add("liveTimesHeading");
+    platformHeading.setPrefWidth(200);
+    Label towardsHeading = new Label("Towards");
+    towardsHeading.getStyleClass().add("liveTimesHeading");
+    towardsHeading.setPrefWidth(200);
+    Label arrivalHeading = new Label("Arrival");
+    arrivalHeading.getStyleClass().add("liveTimesHeading");
+    arrivalHeading.setPrefWidth(110);
+    Label timeToStationHeading = new Label("Arriving in");
+    timeToStationHeading.getStyleClass().add("liveTimesHeading");
+    timeToStationHeading.setPrefWidth(110);
+    Label currentLocationHeading = new Label("Current Location");
+    currentLocationHeading.getStyleClass().add("liveTimesHeading");
+    HBox.setHgrow(currentLocationHeading, Priority.ALWAYS);
+    liveTimesHeading.getChildren().addAll(platformHeading, towardsHeading, arrivalHeading, timeToStationHeading, currentLocationHeading);
+    liveTimesContainer.getChildren().add(liveTimesHeading);
+
     String apiResponse = String.valueOf(retrieveNextTrainFromAPI(naptan, line));
     // Modify method argument to remove the name of the line#
     JSONArray jsonArray = new JSONArray(apiResponse);
@@ -737,30 +756,40 @@ public class App extends Application {
     ArrayList<Label> timeLabels = new ArrayList<>();
 
     for (JSONObject object : filteredByDirection) {
-      String platformName = object.getString("platformName");
-      String towards = object.optString("towards", "Unknown");
-      int timeToStation = object.getInt("timeToStation");
+      // fetching arrival time
+      String arrival = object.getString("expectedArrival");
+      arrival = arrival.substring(arrival.indexOf('T') + 1);
+      arrival = arrival.substring(0, 5);
 
-      Label trainInfo = new Label(platformName + ", Towards: " + towards + " | Arriving in: ");
-      Label trainArrivalCountdown = new Label(Integer.toString(timeToStation));
-      Label trainSeconds = new Label(" seconds");
+      // placing data inside labels
+      Label platformName = new Label(object.getString("platformName"));
+      platformName.setPrefWidth(200);
+      platformName.getStyleClass().add("liveTrainRow");
+      Label towards = new Label(object.optString("towards", "Check Front of Train"));
+      towards.setPrefWidth(200);
+      towards.getStyleClass().add("liveTrainRow");
+      Label expectedArrival = new Label(arrival);
+      expectedArrival.setPrefWidth(110);
+      expectedArrival.getStyleClass().add("liveTrainRow");
+      Label trainArrivalCountdown = new Label(Integer.toString(object.getInt("timeToStation")));
+      trainArrivalCountdown.setPrefWidth(110);
+      trainArrivalCountdown.getStyleClass().add("liveTrainRow");
+      Label currentLocation = new Label(object.optString("currentLocation"));
+      HBox.setHgrow(currentLocation, Priority.ALWAYS);
+      currentLocation.getStyleClass().add("liveTrainRow");
 
       timeLabels.add(trainArrivalCountdown);
 
-      HBox trainArrivalInfo = new HBox();
-      trainArrivalInfo.getChildren().addAll(trainInfo, trainArrivalCountdown, trainSeconds);
+      HBox liveTrainRow = new HBox(platformName, towards, expectedArrival, trainArrivalCountdown, currentLocation);
 
-      trainInfo.getStyleClass().add("displayedTrainTimes");
-      trainArrivalCountdown.getStyleClass().add("displayedTrainTimes");
-      trainSeconds.getStyleClass().add("displayedTrainTimes");
-      liveTimesContainer.getChildren().add(trainArrivalInfo);
+      liveTimesContainer.getChildren().add(liveTrainRow);
+
     }
     root.setCenter(liveTimesContainer);
 
     Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
       for (Label label : timeLabels) {
         try {
-          System.out.println(Integer.parseInt(label.getText()));
           int currentValue = Integer.parseInt(label.getText());
           if (currentValue > 0) {
             label.setText(Integer.toString(currentValue-1));
@@ -786,7 +815,7 @@ public class App extends Application {
 
     displayTrainsStage.setScene(scene);
     scene.getStylesheets().add(App.class.getResource("/css/styles.css").toExternalForm());
-    displayTrainsStage.setTitle("Live Departure Train Times");
+    displayTrainsStage.setTitle(station + " Arrival Board");
     displayTrainsStage.show();
   }
 
