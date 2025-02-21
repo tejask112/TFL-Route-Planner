@@ -170,7 +170,7 @@ public class Network {
   }
 
   public LinkedList<String> findSubLinesAlongRoute(LinkedList<Edge> route) {
-    LinkedList<String> finalSubLineList = new LinkedList<>();
+   LinkedList<String> finalSubLineList = new LinkedList<>();
     Map<String, Boolean> subLinesMap = new HashMap<>();
     Map<String, Integer> subLinesCount = new HashMap<>();
     int iteratorCount = 0;

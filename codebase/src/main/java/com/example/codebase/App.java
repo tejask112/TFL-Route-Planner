@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -31,6 +33,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.geometry.Pos;
+import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
 import java.time.LocalTime;
 import com.opencsv.CSVReader;
@@ -199,7 +203,7 @@ public class App extends Application {
     tflNetwork.addEdge(ChalfontLatimer, Chorleywood, Metropolitan, 4, "Eastbound", new ArrayList<>(List.of("Metropolitan Aldgate")));
     tflNetwork.addEdge(Chorleywood, ChalfontLatimer, Metropolitan, 4, "Westbound", new ArrayList<>(List.of("Metropolitan Amersham", "Metropolitan Chesham")));
     tflNetwork.addEdge(Chorleywood, Rickmansworth, Metropolitan, 5, "Eastbound", new ArrayList<>(List.of("Metropolitan Aldgate", "Metropolitan Chesham")));
-    tflNetwork.addEdge(Rickmansworth, Chorleywood, Metropolitan, 5, "Westbound", new ArrayList<>(List.of("Metropolitan Amersham")));
+    tflNetwork.addEdge(Rickmansworth, Chorleywood, Metropolitan, 5, "Westbound", new ArrayList<>(List.of("Metropolitan Amersham","Metropolitan Chesham")));
     tflNetwork.addEdge(Rickmansworth, MoorPark, Metropolitan, 6, "Eastbound", new ArrayList<>(List.of("Metropolitan Aldgate", "Metropolitan Chesham")));
     tflNetwork.addEdge(MoorPark, Rickmansworth, Metropolitan, 6, "Westbound", new ArrayList<>(List.of("Metropolitan Amersham", "Metropolitan Chesham", "Metropolitan Watford")));
     tflNetwork.addEdge(MoorPark, Northwood, Metropolitan, 4, "Southbound", new ArrayList<>(List.of("Metropolitan Aldgate", "Metropolitan Chesham", "Metropolitan Watford")));
@@ -359,6 +363,7 @@ public class App extends Application {
     tflNetwork.addEdge(HeathrowTerminal5, HeathrowTerminals2_3, Piccadilly, 4, "Eastbound", new ArrayList<>(List.of("Piccadilly Cockfosters")));
     tflNetwork.addEdge(HeathrowTerminal4, HeathrowTerminals2_3, Piccadilly, 4, "Northbound", new ArrayList<>(List.of("Piccadilly Heathrow T5"))); // Check direction
     tflNetwork.addEdge(HeathrowTerminals2_3, HeathrowTerminal4, Piccadilly, 4, "Southbound", new ArrayList<>(List.of("Piccadilly Heathrow T4"))); // Check direction
+
     ComboBox<Station> srcStation = new ComboBox<>();
     srcStation.getItems().addAll(tflNetwork.getStations());
     srcStation.setConverter(new StringConverter<Station>() {
@@ -415,8 +420,7 @@ public class App extends Application {
           } else {
             errorLabel.setText("");
             LinkedList<Edge> route = tflNetwork.findRoute(srcStation.getValue(), destStation.getValue());
-            System.out.println(route);
-            System.out.println(tflNetwork.findLinesAlongRoute(route));
+            System.out.println("ROUTE: " + route);
             try {
               if (route.isEmpty()) {
                 throw new Exception("Departure and Arrival stations must be distinct");
@@ -461,10 +465,11 @@ public class App extends Application {
 
                   // generated all the sublines along a route
                   LinkedList<ArrayList<String>> allSublines = tflNetwork.findAllSublinesAlongRoute(route);
-                  System.out.println(allSublines);
+                  System.out.println("ALL LINES: " + allSublines);
 
                   // generating the sublines
                   LinkedList<String> listSubLines = tflNetwork.findSubLinesAlongRoute(route);
+                  System.out.println("SUBLINES: " + listSubLines);
 
                   // generate button to view other lines to take
                   HBox innerTimeLabel = new HBox();
@@ -511,7 +516,6 @@ public class App extends Application {
                   boardLabel.getStyleClass().add("boardLabel");
                   stationsBox.getChildren().add(originBox);
                   stationsBox.getChildren().add(boardLabel);
-                  System.out.println(listSubLines);
                   String currentLine = listSubLines.peek();
                   int edgeIterationCount = 0;
 
@@ -568,7 +572,6 @@ public class App extends Application {
                   resultBox.getChildren().add(outerHbox);
                 });
 
-
               }
             } catch (Exception exception1) {
               Platform.runLater(() -> {
@@ -600,7 +603,6 @@ public class App extends Application {
       FileReader fr = new FileReader("src/main/resources/NAPTANcsv/naptan.csv");
       CSVReader csvReader = new CSVReader(fr);
       String[] nextRecord;
-
 
       while ((nextRecord = csvReader.readNext()) != null) {
         String undergroundName = nextRecord[1];
@@ -732,6 +734,8 @@ public class App extends Application {
     List<JSONObject> filteredByDirection = filterJSONresponse(jsonArray, platformInput);
     filteredByDirection.sort(Comparator.comparingInt(obj -> obj.getInt("timeToStation")));
 
+    ArrayList<Label> timeLabels = new ArrayList<>();
+
     for (JSONObject object : filteredByDirection) {
       String platformName = object.getString("platformName");
       String towards = object.optString("towards", "Unknown");
@@ -740,6 +744,8 @@ public class App extends Application {
       Label trainInfo = new Label(platformName + ", Towards: " + towards + " | Arriving in: ");
       Label trainArrivalCountdown = new Label(Integer.toString(timeToStation));
       Label trainSeconds = new Label(" seconds");
+
+      timeLabels.add(trainArrivalCountdown);
 
       HBox trainArrivalInfo = new HBox();
       trainArrivalInfo.getChildren().addAll(trainInfo, trainArrivalCountdown, trainSeconds);
@@ -750,6 +756,33 @@ public class App extends Application {
       liveTimesContainer.getChildren().add(trainArrivalInfo);
     }
     root.setCenter(liveTimesContainer);
+
+    Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+      for (Label label : timeLabels) {
+        try {
+          System.out.println(Integer.parseInt(label.getText()));
+          int currentValue = Integer.parseInt(label.getText());
+          if (currentValue > 0) {
+            label.setText(Integer.toString(currentValue-1));
+          } else {
+            label.setText("Arrived");
+            timeLabels.remove(label);
+            break;
+          }
+        } catch (Exception e) {
+          System.err.println("Label text is not a number: " + label.getText());
+        }
+      }
+    }));
+
+    timeline.setCycleCount(Timeline.INDEFINITE);
+    timeline.play();
+
+    displayTrainsStage.setOnCloseRequest((WindowEvent event) -> {
+      if (timeline != null) {
+        timeline.stop();
+      }
+    });
 
     displayTrainsStage.setScene(scene);
     scene.getStylesheets().add(App.class.getResource("/css/styles.css").toExternalForm());
