@@ -731,16 +731,16 @@ public class App extends Application {
     HBox liveTimesHeading = new HBox();
     Label platformHeading = new Label("Platform");
     platformHeading.getStyleClass().add("liveTimesHeading");
-    platformHeading.setPrefWidth(200);
+    platformHeading.setMinWidth(200);
     Label towardsHeading = new Label("Towards");
     towardsHeading.getStyleClass().add("liveTimesHeading");
-    towardsHeading.setPrefWidth(200);
+    towardsHeading.setMinWidth(200);
     Label arrivalHeading = new Label("Arrival");
     arrivalHeading.getStyleClass().add("liveTimesHeading");
-    arrivalHeading.setPrefWidth(110);
+    arrivalHeading.setMinWidth(110);
     Label timeToStationHeading = new Label("Arriving in");
     timeToStationHeading.getStyleClass().add("liveTimesHeading");
-    timeToStationHeading.setPrefWidth(110);
+    timeToStationHeading.setMinWidth(110);
     Label currentLocationHeading = new Label("Current Location");
     currentLocationHeading.getStyleClass().add("liveTimesHeading");
     HBox.setHgrow(currentLocationHeading, Priority.ALWAYS);
@@ -763,20 +763,25 @@ public class App extends Application {
 
       // placing data inside labels
       Label platformName = new Label(object.getString("platformName"));
-      platformName.setPrefWidth(200);
+      platformName.setMinWidth(200);
       platformName.getStyleClass().add("liveTrainRow");
+      HBox.setHgrow(platformName, Priority.NEVER);
       Label towards = new Label(object.optString("towards", "Check Front of Train"));
-      towards.setPrefWidth(200);
+      towards.setMinWidth(200);
       towards.getStyleClass().add("liveTrainRow");
+      HBox.setHgrow(towards, Priority.NEVER);
       Label expectedArrival = new Label(arrival);
-      expectedArrival.setPrefWidth(110);
+      expectedArrival.setMinWidth(110);
       expectedArrival.getStyleClass().add("liveTrainRow");
+      HBox.setHgrow(expectedArrival, Priority.NEVER);
       Label trainArrivalCountdown = new Label(Integer.toString(object.getInt("timeToStation")));
-      trainArrivalCountdown.setPrefWidth(110);
+      trainArrivalCountdown.setMinWidth(110);
       trainArrivalCountdown.getStyleClass().add("liveTrainRow");
+      HBox.setHgrow(trainArrivalCountdown, Priority.NEVER);
       Label currentLocation = new Label(object.optString("currentLocation"));
-      HBox.setHgrow(currentLocation, Priority.ALWAYS);
       currentLocation.getStyleClass().add("liveTrainRow");
+      HBox.setHgrow(currentLocation, Priority.ALWAYS);
+      currentLocation.setWrapText(true);
 
       timeLabels.add(trainArrivalCountdown);
 
