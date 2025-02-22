@@ -766,24 +766,40 @@ public class App extends Application {
       platformName.setMinWidth(200);
       platformName.getStyleClass().add("liveTrainRow");
       HBox.setHgrow(platformName, Priority.NEVER);
+
       Label towards = new Label(object.optString("towards", "Check Front of Train"));
       towards.setMinWidth(200);
       towards.getStyleClass().add("liveTrainRow");
       HBox.setHgrow(towards, Priority.NEVER);
+
       Label expectedArrival = new Label(arrival);
       expectedArrival.setMinWidth(110);
       expectedArrival.getStyleClass().add("liveTrainRow");
       HBox.setHgrow(expectedArrival, Priority.NEVER);
-      Label trainArrivalCountdown = new Label(Integer.toString(object.getInt("timeToStation")));
+
+      Label trainArrivalCountdown = new Label();
+      if (object.optString("currentLocation").equals("At Platform")) {
+        trainArrivalCountdown.setText("Arrived");
+      } else {
+        int arrivalCountdown = Integer.parseInt(Integer.toString(object.getInt("timeToStation")));
+        int minutes = arrivalCountdown/60;
+        int seconds = arrivalCountdown%60;
+        if (String.valueOf(seconds).length() == 1) {
+          trainArrivalCountdown.setText(minutes + ":0" + seconds + " mins");
+        } else {
+          trainArrivalCountdown.setText(minutes + ":" + seconds + " mins");
+        }
+        timeLabels.add(trainArrivalCountdown);
+      }
+
       trainArrivalCountdown.setMinWidth(110);
       trainArrivalCountdown.getStyleClass().add("liveTrainRow");
       HBox.setHgrow(trainArrivalCountdown, Priority.NEVER);
+
       Label currentLocation = new Label(object.optString("currentLocation"));
       currentLocation.getStyleClass().add("liveTrainRow");
       HBox.setHgrow(currentLocation, Priority.ALWAYS);
       currentLocation.setWrapText(true);
-
-      timeLabels.add(trainArrivalCountdown);
 
       HBox liveTrainRow = new HBox(platformName, towards, expectedArrival, trainArrivalCountdown, currentLocation);
 
@@ -795,16 +811,28 @@ public class App extends Application {
     Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
       for (Label label : timeLabels) {
         try {
-          int currentValue = Integer.parseInt(label.getText());
-          if (currentValue > 0) {
-            label.setText(Integer.toString(currentValue-1));
+          String currentValue = label.getText();
+          int mins = Integer.parseInt(currentValue.substring(0, currentValue.indexOf(":")));
+          int seconds = Integer.parseInt(currentValue.substring(currentValue.indexOf(":")+1, currentValue.indexOf("m")-1));
+          int totalTime = (mins * 60) + seconds;
+
+          if (totalTime > 0) {
+            totalTime--;
+            int newMins = totalTime/60;
+            int newSeconds = totalTime%60;
+            if (String.valueOf(newSeconds).length() == 1) {
+              label.setText(newMins + ":0" + newSeconds + " mins");
+            } else {
+              label.setText(newMins + ":" + newSeconds + " mins");
+            }
           } else {
             label.setText("Arrived");
             timeLabels.remove(label);
             break;
           }
+
         } catch (Exception e) {
-          System.err.println("Label text is not a number: " + label.getText());
+          System.err.println("Error: " + e);
         }
       }
     }));
