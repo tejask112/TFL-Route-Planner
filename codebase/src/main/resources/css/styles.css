@@ -3,7 +3,7 @@
 .arrivalBoardPageTitle {
   -fx-text-fill: white;
   -fx-font-weight: bold;
-  -fx-padding: 0px 10px 15px 0px;
+  -fx-padding: 0px 10px 5px 0px;
   -fx-font-size: 20px;
 }
 
@@ -11,6 +11,12 @@
   -fx-text-fill: white;
   -fx-font-size: 17;
   -fx-padding: 1 30 2 0;
+}
+
+.arrivalBoardRequestTime {
+  -fx-text-fill: #c0c0c0;
+  -fx-font-size: 14;
+  -fx-padding: 0px 0px 10px 0px;
 }
 
 .boardLineName {

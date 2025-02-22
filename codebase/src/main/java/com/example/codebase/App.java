@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -728,6 +729,19 @@ public class App extends Application {
 
     liveTimesContainer.getChildren().add(topBar);
 
+    String apiResponse = String.valueOf(retrieveNextTrainFromAPI(naptan, line));
+    // Modify method argument to remove the name of the line#
+    JSONArray jsonArray = new JSONArray(apiResponse);
+    List<JSONObject> filteredByDirection = filterJSONresponse(jsonArray, platformInput);
+    filteredByDirection.sort(Comparator.comparingInt(obj -> obj.getInt("timeToStation")));
+
+    JSONObject timings = filteredByDirection.get(0).getJSONObject("timing");
+    String requestSent = timings.getString("sent");
+    requestSent = requestSent.substring(11,16);
+    Label requestSentLabel = new Label("Arrival Board last updated at " + requestSent + ". Refresh for latest timings.");
+    requestSentLabel.getStyleClass().add("arrivalBoardRequestTime");
+    liveTimesContainer.getChildren().add(requestSentLabel);
+
     HBox liveTimesHeading = new HBox();
     Label platformHeading = new Label("Platform");
     platformHeading.getStyleClass().add("liveTimesHeading");
@@ -746,12 +760,6 @@ public class App extends Application {
     HBox.setHgrow(currentLocationHeading, Priority.ALWAYS);
     liveTimesHeading.getChildren().addAll(platformHeading, towardsHeading, arrivalHeading, timeToStationHeading, currentLocationHeading);
     liveTimesContainer.getChildren().add(liveTimesHeading);
-
-    String apiResponse = String.valueOf(retrieveNextTrainFromAPI(naptan, line));
-    // Modify method argument to remove the name of the line#
-    JSONArray jsonArray = new JSONArray(apiResponse);
-    List<JSONObject> filteredByDirection = filterJSONresponse(jsonArray, platformInput);
-    filteredByDirection.sort(Comparator.comparingInt(obj -> obj.getInt("timeToStation")));
 
     ArrayList<Label> timeLabels = new ArrayList<>();
 
