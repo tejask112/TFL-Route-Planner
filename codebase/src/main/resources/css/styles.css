@@ -73,6 +73,18 @@
   -fx-font-size: 16px;
 }
 
+.liveTimesHeading {
+  -fx-font-weight: bold;
+  -fx-font-size: 16px;
+  -fx-text-fill: white;
+}
+
+.liveTrainRow {
+  -fx-font-size: 14px;
+  -fx-text-fill: white;
+}
+
+
 .noStationsError {
   -fx-font-weight: bold;
   -fx-padding: 5px 20px;
@@ -117,13 +129,6 @@
   -fx-background-color: #202225;
 }
 
-.tflLogo {
-  -fx-translate-x: 25px;
-}
-
-.topTitleBar {
-  -fx-background-color: #2d3039;
-}
 
 .stationComboBox {
   -fx-background-color: #404040;
@@ -178,15 +183,36 @@
 
 }
 
-.liveTimesHeading {
-  -fx-font-weight: bold;
-  -fx-font-size: 16px;
-  -fx-text-fill: white;
+.tflLogo {
+  -fx-translate-x: 25px;
 }
 
-.liveTrainRow {
-  -fx-font-size: 14px;
-  -fx-text-fill: white;
+.topBarButtons {
+  -fx-padding: 0 0 0 440;
+}
+
+.topBarActualButtons {
+  -fx-text-fill: #A0A0A0;
+  -fx-font-size: 16px;
+  -fx-pref-height: 70;
+  -fx-pref-width: 100;
+  -fx-background-color: #2d3039;
+}
+
+.topBarActualButtons:hover {
+  -fx-background-color: #3a3d47;
+  -fx-border-color: transparent transparent #3f6dad transparent;
+  -fx-border-radius: 0px 0px 3px 0px;
+}
+
+.topBarActualButtons:pressed {
+  -fx-background-color: #24262d;
+  -fx-border-color: transparent transparent #3f6dad transparent;
+  -fx-border-radius: 0px 0px 3px 0px;
+}
+
+.topTitleBar {
+  -fx-background-color: #2d3039;
 }
 
 .trainDepartureButton {

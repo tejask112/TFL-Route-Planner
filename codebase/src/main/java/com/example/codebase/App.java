@@ -13,16 +13,23 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -74,6 +81,21 @@ public class App extends Application {
     HBox.setMargin(logoView, new javafx.geometry.Insets(0, 10, 0, 0));
     topBar.setAlignment(Pos.CENTER_LEFT);
     topBar.getChildren().addAll(logoView, thamesView);
+
+    // introducing the line status button
+    HBox topBarButtons = new HBox();
+    topBarButtons.getStyleClass().add("topBarButtons");
+    topBar.getChildren().add(topBarButtons);
+
+    Button lineStatusBtn = new Button("Line Status");
+    lineStatusBtn.getStyleClass().add("topBarActualButtons");
+    topBarButtons.getChildren().add(lineStatusBtn);
+
+    // introducing the fares button
+    Button faresBtn = new Button("Fares");
+    faresBtn.getStyleClass().add("topBarActualButtons");
+    topBarButtons.getChildren().add(faresBtn);
+
     root.setTop(topBar);
 
     // ---------------------------- Bottom Half HBox ----------------------------
@@ -178,7 +200,6 @@ public class App extends Application {
     Station HeathrowTerminals2_3 = new Station("Heathrow Terminals 2 & 3", new ArrayList<>(List.of(Piccadilly)), true, 6);
     Station HeathrowTerminal4 = new Station("Heathrow Terminal 4", new ArrayList<>(List.of(Piccadilly)), true, 6);
     Station HeathrowTerminal5 = new Station("Heathrow Terminal 5", new ArrayList<>(List.of(Piccadilly)), true, 6);
-
 
     tflNetwork.addStation(new ArrayList<>(List.of(
         // Metropolitan (main snippet):
@@ -365,34 +386,14 @@ public class App extends Application {
     tflNetwork.addEdge(HeathrowTerminal4, HeathrowTerminals2_3, Piccadilly, 4, "Northbound", new ArrayList<>(List.of("Piccadilly Heathrow T5"))); // Check direction
     tflNetwork.addEdge(HeathrowTerminals2_3, HeathrowTerminal4, Piccadilly, 4, "Southbound", new ArrayList<>(List.of("Piccadilly Heathrow T4"))); // Check direction
 
-    ComboBox<Station> srcStation = new ComboBox<>();
-    srcStation.getItems().addAll(tflNetwork.getStations());
-    srcStation.setConverter(new StringConverter<Station>() {
-      @Override
-      public String toString(Station station) {
-        return station.getName();
-      }
-      @Override
-      public Station fromString(String s) {
-        return null;
-      }
-    });
+    ObservableList<Station> stationList = FXCollections.observableArrayList(tflNetwork.getStations());
+
+    ComboBox<Station> srcStation = new ComboBox<>(stationList);
     srcStation.setPromptText("Departure");
     srcStation.setStyle("-fx-translate-y: 50px; -fx-translate-x: 20px;");
     srcStation.getStyleClass().add("stationComboBox");
 
-    ComboBox<Station> destStation = new ComboBox<>();
-    destStation.getItems().addAll(tflNetwork.getStations());
-    destStation.setConverter(new StringConverter<Station>() {
-      @Override
-      public String toString(Station station) {
-        return station.getName();
-      }
-      @Override
-      public Station fromString(String s) {
-        return null;
-      }
-    });
+    ComboBox<Station> destStation = new ComboBox<>(stationList);
     destStation.setPromptText("Arrival");
     destStation.setStyle("-fx-translate-y: 60px; -fx-translate-x: 20px;");
     destStation.getStyleClass().add("stationComboBox");
@@ -427,6 +428,8 @@ public class App extends Application {
                 throw new Exception("Departure and Arrival stations must be distinct");
               } else {
                 Platform.runLater(() -> {
+                  resultBox.getChildren().clear();
+
                   // generates the top title bar
                   HBox destinationMessageHBox = new HBox();
                   Label destinationMessage = new Label("Your Route to "+destStation.getValue().getName());
