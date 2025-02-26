@@ -4,6 +4,7 @@ import com.example.codebase.Network.Edge;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
@@ -82,11 +83,11 @@ public class App extends Application {
     topBar.setAlignment(Pos.CENTER_LEFT);
     topBar.getChildren().addAll(logoView, thamesView);
 
-    // introducing the line status button
     HBox topBarButtons = new HBox();
     topBarButtons.getStyleClass().add("topBarButtons");
     topBar.getChildren().add(topBarButtons);
 
+    // introducing the line status button
     Button lineStatusBtn = new Button("Line Status");
     lineStatusBtn.getStyleClass().add("topBarActualButtons");
     topBarButtons.getChildren().add(lineStatusBtn);
@@ -414,7 +415,31 @@ public class App extends Application {
     errorLabel.getStyleClass().add("noStationsError");
     userInput.getChildren().addAll(title, srcStation, destStation, gridPane, submit, errorLabel);
 
-    EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+    // event handler for the line status button
+    EventHandler<ActionEvent> lineStats = new EventHandler<ActionEvent>() {
+      @Override
+      public void handle (ActionEvent actionEvent) {
+        Platform.runLater(() -> {
+          resultBox.getChildren().clear();
+
+          // generate the top title bar
+          HBox lineStatusTitleBox = new HBox();
+          Label lineStatusTitle = new Label("Current Line Status");
+          lineStatusTitleBox.getChildren().add(lineStatusTitle);
+          lineStatusTitleBox.setPrefWidth(resultBox.getPrefWidth());
+          lineStatusTitle.getStyleClass().add("resultBoxTitle");
+          resultBox.getChildren().add(lineStatusTitleBox);
+
+          // make API call
+          getLiveStatuses();
+
+
+        });
+      }
+    };
+
+    // event handler for the submit button
+    EventHandler<ActionEvent> routePlanner = new EventHandler<ActionEvent>() {
       public void handle (ActionEvent e) {
         try {
           if (srcStation.getValue() == null || destStation.getValue() == null){
@@ -435,7 +460,7 @@ public class App extends Application {
                   Label destinationMessage = new Label("Your Route to "+destStation.getValue().getName());
                   destinationMessageHBox.getChildren().add(destinationMessage);
                   destinationMessageHBox.setPrefWidth(resultBox.getPrefWidth());
-                  destinationMessage.getStyleClass().add("destinationMessage");
+                  destinationMessage.getStyleClass().add("resultBoxTitle");
                   resultBox.getChildren().add(destinationMessageHBox);
 
                   // generating the hashmap for the different lines and their colours
@@ -592,7 +617,8 @@ public class App extends Application {
       }
     };
 
-    submit.setOnAction(event);
+    submit.setOnAction(routePlanner);
+    lineStatusBtn.setOnAction(lineStats);
 
     Scene scene = new Scene(root, 1000, 650);
     scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
@@ -623,6 +649,52 @@ public class App extends Application {
     } else {
       throw new Exception("System Error - No NAPTAN code found");
     }
+  }
+
+  public static ArrayList<ArrayList<String>> getLiveStatuses() {
+    ArrayList<ArrayList<String>> apiResponse = new ArrayList<>();;
+    try {
+      String urlString = "https://api.tfl.gov.uk/Line/Mode/tube/Status";
+      URL url = new URL(urlString);
+      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+      // Request Headers from the API
+      connection.setRequestProperty("Cache-Control", "no-cache");
+      connection.setRequestMethod("GET");
+      int status = connection.getResponseCode();
+
+      // ensures valid connection
+      if (status == 200) {
+        // reads the API response
+        BufferedReader in = new BufferedReader(new InputStreamReader((connection.getInputStream())));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+          content.append(inputLine);
+        }
+        in.close();
+        JSONArray jsonArray = new JSONArray(content.toString());
+
+        for (int i=0; i<jsonArray.length(); i++) {
+          ArrayList<String> innerArrayList = new ArrayList<>();
+          JSONObject object = jsonArray.getJSONObject(i);
+          innerArrayList.add(object.getString("name"));
+
+          JSONArray lineStatusDetails = new JSONArray(object.getJSONArray("lineStatuses"));
+          for (int j=0; j<lineStatusDetails.length(); j++) {
+            JSONObject lineStatusObject = lineStatusDetails.getJSONObject(j);
+            innerArrayList.add(lineStatusObject.getString("statusSeverityDescription"));
+            innerArrayList.add(lineStatusObject.optString("reason"));
+          }
+          apiResponse.add(innerArrayList);
+        }
+      }
+      connection.disconnect();
+    } catch (Exception exception) {
+      System.out.print("exception:" + exception.getMessage());
+    }
+    System.out.println(apiResponse);
+    return apiResponse;
   }
 
   public static JSONObject getTimeOfTrainArrival(String naptan, String line, String subline, String platformInput) {
@@ -678,6 +750,7 @@ public class App extends Application {
     } catch (Exception exception) {
       System.out.print("exception:" + exception.getMessage());
     }
+    System.out.println(returnStats);
     return returnStats;
   }
 
