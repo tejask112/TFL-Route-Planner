@@ -430,8 +430,45 @@ public class App extends Application {
           lineStatusTitle.getStyleClass().add("resultBoxTitle");
           resultBox.getChildren().add(lineStatusTitleBox);
 
+          // generating vbox to output to
+          VBox lineStatusResultBox = new VBox();
+          lineStatusResultBox.getStyleClass().add("lineStatusResultBox");
+
+          // generating tfl colours hashmap
+          Map<String, String> lineColoursString = new HashMap<>();
+          lineColoursString.put("Bakerloo", "#B36305");
+          lineColoursString.put("Central", "#E32017");
+          lineColoursString.put("Circle", "#FFD300");
+          lineColoursString.put("District", "#00782A");
+          lineColoursString.put("Hammersmith & City", "#F3A9BB");
+          lineColoursString.put("Jubilee", "#A0A5A9");
+          lineColoursString.put("Metropolitan", "#9B0056");
+          lineColoursString.put("Northern", "#000000");
+          lineColoursString.put("Piccadilly", "#003688");
+          lineColoursString.put("Victoria", "#0098D4");
+          lineColoursString.put("Waterloo & City", "#95CDBA");
+
           // make API call
-          getLiveStatuses();
+          ArrayList<ArrayList<String>> liveStatusAPIresponse = getLiveStatuses();
+          for (ArrayList<String> lineDetails : liveStatusAPIresponse) {
+            HBox individualLine = new HBox();
+            String name = lineDetails.get(0);
+            String statusDescription = lineDetails.get(1);
+            String reason = lineDetails.get(2);
+
+            Label lineName = new Label(name);
+            if (name.contains("&")) {
+              lineName.setStyle("-fx-text-fill: black; -fx-background-color: " + lineColoursString.get(name) + ";");
+            } else {
+              lineName.setStyle("-fx-text-fill: white; -fx-background-color: " + lineColoursString.get(name) + ";");
+            }
+            lineName.setStyle("-fx-background-color: " + lineColoursString.get(name));
+            lineName.getStyleClass().add("lineNameBoxes");
+            individualLine.getChildren().add(lineName);
+            lineStatusResultBox.getChildren().add(individualLine);
+          }
+
+          resultBox.getChildren().add(lineStatusResultBox);
 
 
         });

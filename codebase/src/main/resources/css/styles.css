@@ -62,6 +62,17 @@
   -fx-font-weight: bold;
 }
 
+.lineNameBoxes {
+  -fx-pref-height: 40px;
+  -fx-pref-width: 175px;
+  -fx-font-size: 16px;
+  -fx-padding: 0 0 0 10;
+}
+
+.lineStatusResultBox {
+  -fx-padding: 0 0 0 50;
+}
+
 .liveTimes {
   -fx-text-fill: #A0A0A0;
   -fx-font-size: 16px;
