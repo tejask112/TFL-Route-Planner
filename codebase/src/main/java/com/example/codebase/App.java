@@ -462,14 +462,13 @@ public class App extends Application {
             } else {
               lineName.setStyle("-fx-text-fill: white; -fx-background-color: " + lineColoursString.get(name) + ";");
             }
-            lineName.setStyle("-fx-background-color: " + lineColoursString.get(name));
             lineName.getStyleClass().add("lineNameBoxes");
             individualLine.getChildren().add(lineName);
+
             lineStatusResultBox.getChildren().add(individualLine);
           }
 
           resultBox.getChildren().add(lineStatusResultBox);
-
 
         });
       }
