@@ -47,6 +47,10 @@
 
 }
 
+.individualLine {
+  -fx-background-color: #202225;
+}
+
 .individualStatusDescription {
   -fx-background-color: #202225;
   -fx-padding: 5 0 10 0;

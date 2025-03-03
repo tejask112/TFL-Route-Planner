@@ -457,6 +457,7 @@ public class App extends Application {
           ArrayList<ArrayList<String>> liveStatusAPIresponse = getLiveStatuses();
           for (ArrayList<String> lineDetails : liveStatusAPIresponse) {
             HBox individualLine = new HBox();
+            individualLine.getStyleClass().add("individualLine");
             String name = lineDetails.get(0);
             String statusDescription = lineDetails.get(1);
             String reason = lineDetails.get(2);
@@ -470,12 +471,13 @@ public class App extends Application {
             lineName.getStyleClass().add("lineNameBoxes");
             individualLine.getChildren().add(lineName);
 
-            if (reason.equals(" ")) {
+            if (reason.equals("")) {
               Label statusDescriptionLabel = new Label(statusDescription);
               statusDescriptionLabel.getStyleClass().add("individualStatusDescription");
               individualLine.getChildren().add(statusDescriptionLabel);
             } else {
               VBox innerStatusDescriptionBox = new VBox();
+              innerStatusDescriptionBox.getStyleClass().add("individualStatusDescription");
               Label statusDescriptionLabel = new Label(statusDescription);
               Label reasonLabel = new Label(reason);
               innerStatusDescriptionBox.getChildren().addAll(statusDescriptionLabel, reasonLabel);
