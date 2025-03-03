@@ -30,6 +30,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -432,7 +433,11 @@ public class App extends Application {
 
           // generating vbox to output to
           VBox lineStatusResultBox = new VBox();
-          lineStatusResultBox.getStyleClass().add("lineStatusResultBox");
+
+          // generate ScrollPane
+          ScrollPane scrollPane = new ScrollPane(lineStatusResultBox);
+          scrollPane.setFitToWidth(true);
+          scrollPane.getStyleClass().add("lineStatusResultBox");
 
           // generating tfl colours hashmap
           Map<String, String> lineColoursString = new HashMap<>();
@@ -465,10 +470,22 @@ public class App extends Application {
             lineName.getStyleClass().add("lineNameBoxes");
             individualLine.getChildren().add(lineName);
 
+            if (reason.equals(" ")) {
+              Label statusDescriptionLabel = new Label(statusDescription);
+              statusDescriptionLabel.getStyleClass().add("individualStatusDescription");
+              individualLine.getChildren().add(statusDescriptionLabel);
+            } else {
+              VBox innerStatusDescriptionBox = new VBox();
+              Label statusDescriptionLabel = new Label(statusDescription);
+              Label reasonLabel = new Label(reason);
+              innerStatusDescriptionBox.getChildren().addAll(statusDescriptionLabel, reasonLabel);
+              individualLine.getChildren().add(innerStatusDescriptionBox);
+            }
+
             lineStatusResultBox.getChildren().add(individualLine);
           }
 
-          resultBox.getChildren().add(lineStatusResultBox);
+          resultBox.getChildren().add(scrollPane);
 
         });
       }

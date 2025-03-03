@@ -47,6 +47,11 @@
 
 }
 
+.individualStatusDescription {
+  -fx-background-color: #202225;
+  -fx-padding: 5 0 10 0;
+}
+
 .intermediateStation {
   -fx-padding: 3 30 0 0;
   -fx-font-size: 10;
@@ -63,7 +68,7 @@
 }
 
 .lineNameBoxes {
-  -fx-pref-height: 40px;
+  -fx-pref-height: 45px;
   -fx-pref-width: 175px;
   -fx-font-size: 16px;
   -fx-padding: 0 0 0 10;
@@ -71,6 +76,7 @@
 
 .lineStatusResultBox {
   -fx-padding: 0 0 0 50;
+  -fx-background-color: #202225;
 }
 
 .liveTimes {
