@@ -56,6 +56,21 @@
   -fx-padding: 5 0 10 0;
 }
 
+.individualStatusGoodServiceText {
+  -fx-text-fill: white;
+  -fx-padding: 10 0 0 20;
+}
+
+.individualStatusDelaysText {
+  -fx-text-fill: white;
+  -fx-padding: 7 0 0 20;
+}
+
+.individualStatusDelaysTextDescription {
+  -fx-text-fill: white;
+  -fx-padding: 0 0 0 20;
+}
+
 .intermediateStation {
   -fx-padding: 3 30 0 0;
   -fx-font-size: 10;
@@ -149,6 +164,52 @@
   -fx-font-size: 19px;
   -fx-padding: 40 40 20 40;
 }
+
+/* ScrollPane Styling */
+.scroll-pane {
+  -fx-background-color: transparent;
+}
+
+.scroll-pane .viewport {
+  -fx-background-color: #202225;
+}
+
+.scroll-pane .content {
+  -fx-background-color: #202225;
+}
+
+/* ScrollBar Track */
+.scroll-bar:vertical, .scroll-bar:horizontal {
+  -fx-background-color: #2D3039;
+  -fx-background-radius: 5px;
+}
+
+/* ScrollBar Thumb */
+.scroll-bar:vertical .thumb, .scroll-bar:horizontal .thumb {
+  -fx-background-color: #3A3D47;
+  -fx-background-radius: 5px;
+}
+
+.scroll-bar:vertical .thumb:hover, .scroll-bar:horizontal .thumb:hover {
+  -fx-background-color: #5865F2;
+}
+
+.scroll-bar:vertical .thumb:pressed, .scroll-bar:horizontal .thumb:pressed {
+  -fx-background-color: #4752C4;
+}
+
+/* ScrollBar Buttons */
+.scroll-bar:vertical .increment-button, .scroll-bar:vertical .decrement-button,
+.scroll-bar:horizontal .increment-button, .scroll-bar:horizontal .decrement-button {
+  -fx-background-color: #2D3039;
+  -fx-background-radius: 3px;
+}
+
+.scroll-bar:vertical .increment-button:hover, .scroll-bar:vertical .decrement-button:hover,
+.scroll-bar:horizontal .increment-button:hover, .scroll-bar:horizontal .decrement-button:hover {
+  -fx-background-color: #3A3D47;
+}
+
 
 .stationComboBox {
   -fx-background-color: #404040;

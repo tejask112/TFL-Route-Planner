@@ -474,12 +474,15 @@ public class App extends Application {
             if (reason.equals("")) {
               Label statusDescriptionLabel = new Label(statusDescription);
               statusDescriptionLabel.getStyleClass().add("individualStatusDescription");
+              statusDescriptionLabel.getStyleClass().add("individualStatusGoodServiceText");
               individualLine.getChildren().add(statusDescriptionLabel);
             } else {
               VBox innerStatusDescriptionBox = new VBox();
               innerStatusDescriptionBox.getStyleClass().add("individualStatusDescription");
               Label statusDescriptionLabel = new Label(statusDescription);
+              statusDescriptionLabel.getStyleClass().add("individualStatusDelaysText");
               Label reasonLabel = new Label(reason);
+              reasonLabel.getStyleClass().add("individualStatusDelaysTextDescription");
               innerStatusDescriptionBox.getChildren().addAll(statusDescriptionLabel, reasonLabel);
               individualLine.getChildren().add(innerStatusDescriptionBox);
             }
