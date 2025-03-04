@@ -37,6 +37,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -469,6 +470,7 @@ public class App extends Application {
               lineName.setStyle("-fx-text-fill: white; -fx-background-color: " + lineColoursString.get(name) + ";");
             }
             lineName.getStyleClass().add("lineNameBoxes");
+            lineName.setMinWidth(175);
             individualLine.getChildren().add(lineName);
 
             if (reason.equals("")) {
@@ -481,10 +483,17 @@ public class App extends Application {
               innerStatusDescriptionBox.getStyleClass().add("individualStatusDescription");
               Label statusDescriptionLabel = new Label(statusDescription);
               statusDescriptionLabel.getStyleClass().add("individualStatusDelaysText");
+              statusDescriptionLabel.setWrapText(true);
               Label reasonLabel = new Label(reason);
               reasonLabel.getStyleClass().add("individualStatusDelaysTextDescription");
+              reasonLabel.setWrapText(true);
+              reasonLabel.setMaxWidth(Double.MAX_VALUE);
+              reasonLabel.setPrefWidth(Region.USE_COMPUTED_SIZE);
+              HBox.setHgrow(reasonLabel, Priority.ALWAYS); // Ensure it expands as needed
+
               innerStatusDescriptionBox.getChildren().addAll(statusDescriptionLabel, reasonLabel);
               individualLine.getChildren().add(innerStatusDescriptionBox);
+
             }
 
             lineStatusResultBox.getChildren().add(individualLine);

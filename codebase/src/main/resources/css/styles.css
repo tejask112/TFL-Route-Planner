@@ -58,12 +58,12 @@
 
 .individualStatusGoodServiceText {
   -fx-text-fill: white;
-  -fx-padding: 10 0 0 20;
+  -fx-padding: 12 0 0 20;
 }
 
 .individualStatusDelaysText {
   -fx-text-fill: white;
-  -fx-padding: 7 0 0 20;
+  -fx-padding: 0 0 0 20;
 }
 
 .individualStatusDelaysTextDescription {
@@ -181,13 +181,11 @@
 /* ScrollBar Track */
 .scroll-bar:vertical, .scroll-bar:horizontal {
   -fx-background-color: #2D3039;
-  -fx-background-radius: 5px;
 }
 
 /* ScrollBar Thumb */
 .scroll-bar:vertical .thumb, .scroll-bar:horizontal .thumb {
   -fx-background-color: #3A3D47;
-  -fx-background-radius: 5px;
 }
 
 .scroll-bar:vertical .thumb:hover, .scroll-bar:horizontal .thumb:hover {
@@ -202,7 +200,6 @@
 .scroll-bar:vertical .increment-button, .scroll-bar:vertical .decrement-button,
 .scroll-bar:horizontal .increment-button, .scroll-bar:horizontal .decrement-button {
   -fx-background-color: #2D3039;
-  -fx-background-radius: 3px;
 }
 
 .scroll-bar:vertical .increment-button:hover, .scroll-bar:vertical .decrement-button:hover,
