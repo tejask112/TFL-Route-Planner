@@ -537,6 +537,10 @@ public class App extends Application {
 
                   // generating the outerHbox which contains the station lines and station descriptions
                   HBox outerHbox = new HBox();
+                  HBox outerExtenderHBox = new HBox();
+                  outerExtenderHBox.setPrefHeight(40);
+
+                  VBox outerOuterHBox = new VBox(outerHbox, outerExtenderHBox);
                   VBox timeAndRouteBox = new VBox();
                   timeAndRouteBox.setPrefWidth(165);
                   VBox stationsBox = new VBox();
@@ -544,7 +548,7 @@ public class App extends Application {
                   stationsBox.setMaxWidth(Double.MAX_VALUE);
 
                   // generating the scroll bar
-                  ScrollPane outerHboxScrollPane = new ScrollPane(outerHbox);
+                  ScrollPane outerHboxScrollPane = new ScrollPane(outerOuterHBox);
                   outerHboxScrollPane.setFitToWidth(true);
 
                   // generating the two vboxes for the time and route box
