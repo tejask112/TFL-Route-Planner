@@ -543,6 +543,10 @@ public class App extends Application {
                   HBox.setHgrow(stationsBox, Priority.ALWAYS);
                   stationsBox.setMaxWidth(Double.MAX_VALUE);
 
+                  // generating the scroll bar
+                  ScrollPane outerHboxScrollPane = new ScrollPane(outerHbox);
+                  outerHboxScrollPane.setFitToWidth(true);
+
                   // generating the two vboxes for the time and route box
                   VBox timeBox = new VBox();
                   VBox routeBox = new VBox();
@@ -665,7 +669,7 @@ public class App extends Application {
                       }
                     }
                   }
-                  resultBox.getChildren().add(outerHbox);
+                  resultBox.getChildren().add(outerHboxScrollPane);
                 });
 
               }
