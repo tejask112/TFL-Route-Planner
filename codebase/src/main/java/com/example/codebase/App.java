@@ -912,6 +912,17 @@ public class App extends Application {
     liveTimesHeading.getChildren().addAll(platformHeading, towardsHeading, arrivalHeading, timeToStationHeading, currentLocationHeading);
     liveTimesContainer.getChildren().add(liveTimesHeading);
 
+    VBox liveResults = new VBox();
+
+    ScrollPane arrivalBoardTrainInfo = new ScrollPane(liveResults);
+    liveTimesContainer.getChildren().add(arrivalBoardTrainInfo);
+    arrivalBoardTrainInfo.setFitToWidth(true);
+    arrivalBoardTrainInfo.setFitToHeight(true);
+    arrivalBoardTrainInfo.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+    arrivalBoardTrainInfo.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+
+
     ArrayList<Label> timeLabels = new ArrayList<>();
 
     for (JSONObject object : filteredByDirection) {
@@ -962,8 +973,7 @@ public class App extends Application {
 
       HBox liveTrainRow = new HBox(platformName, towards, expectedArrival, trainArrivalCountdown, currentLocation);
 
-      liveTimesContainer.getChildren().add(liveTrainRow);
-
+      liveResults.getChildren().add(liveTrainRow);
     }
     root.setCenter(liveTimesContainer);
 
