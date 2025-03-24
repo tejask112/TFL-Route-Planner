@@ -32,6 +32,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -125,6 +126,7 @@ public class App extends Application {
     // Create the line object
     Line Metropolitan = new Line("Metropolitan", Boolean.TRUE);
     Line Piccadilly = new Line("Piccadilly", Boolean.FALSE);
+    Line Jubilee = new Line("Jubilee", Boolean.FALSE);
 
     // Create stations
     Station Amersham = new Station("Amersham", new ArrayList<>(List.of(Metropolitan)), true, 9);
@@ -137,9 +139,9 @@ public class App extends Application {
     Station Pinner = new Station("Pinner", new ArrayList<>(List.of(Metropolitan)), false, 5);
     Station NorthHarrow = new Station("North Harrow", new ArrayList<>(List.of(Metropolitan)), false, 5);
     Station HarrowOnTheHill = new Station("Harrow-on-the-Hill", new ArrayList<>(List.of(Metropolitan)), true, 5);
-    Station WembleyPark = new Station("Wembley Park", new ArrayList<>(List.of(Metropolitan)), true, 4);
-    Station FinchleyRoad = new Station("Finchley Road", new ArrayList<>(List.of(Metropolitan)), true, 2);
-    Station BakerStreet = new Station("Baker Street", new ArrayList<>(List.of(Metropolitan)), true, 1);
+    Station WembleyPark = new Station("Wembley Park", new ArrayList<>(List.of(Metropolitan, Jubilee)), true, 4);
+    Station FinchleyRoad = new Station("Finchley Road", new ArrayList<>(List.of(Metropolitan, Jubilee)), true, 2);
+    Station BakerStreet = new Station("Baker Street", new ArrayList<>(List.of(Metropolitan, Jubilee)), true, 1);
     Station GreatPortlandStreet = new Station("Great Portland Street", new ArrayList<>(List.of(Metropolitan)), true, 1);
     Station EustonSquare = new Station("Euston Square", new ArrayList<>(List.of(Metropolitan)), true, 1);
     Station KingsCrossStPancras = new Station("King's Cross St. Pancras", new ArrayList<>(List.of(Metropolitan)), true, 1);
@@ -203,6 +205,30 @@ public class App extends Application {
     Station HeathrowTerminals2_3 = new Station("Heathrow Terminals 2 & 3", new ArrayList<>(List.of(Piccadilly)), true, 6);
     Station HeathrowTerminal4 = new Station("Heathrow Terminal 4", new ArrayList<>(List.of(Piccadilly)), true, 6);
     Station HeathrowTerminal5 = new Station("Heathrow Terminal 5", new ArrayList<>(List.of(Piccadilly)), true, 6);
+    Station Stratford = new Station("Stratford", new ArrayList<>(List.of(Jubilee)), true, 4);
+    Station WestHam = new Station("West Ham", new ArrayList<>(List.of(Jubilee)), true, 3);
+    Station CanningTown = new Station("Canning Town", new ArrayList<>(List.of(Jubilee)), true, 3);
+    Station NorthGreenwich = new Station("North Greenwich", new ArrayList<>(List.of(Jubilee)), true, 2);
+    Station CanaryWharf = new Station("Canary Wharf", new ArrayList<>(List.of(Jubilee)), true, 2);
+    Station CanadaWater = new Station("Canada Water", new ArrayList<>(List.of(Jubilee)), true, 2);
+    Station Bermondsey = new Station("Bermondsey", new ArrayList<>(List.of(Jubilee)), false, 1);
+    Station LondonBridge = new Station("London Bridge", new ArrayList<>(List.of(Jubilee)), true, 1);
+    Station Southwark = new Station("Southwark", new ArrayList<>(List.of(Jubilee)), false, 1);
+    Station Waterloo = new Station("Waterloo", new ArrayList<>(List.of(Jubilee)), true, 1);
+    Station Westminster = new Station("Westminster", new ArrayList<>(List.of(Jubilee)), true, 1);
+    Station BondStreet = new Station("Bond Street", new ArrayList<>(List.of(Jubilee)), true, 1);
+    Station StJohnsWood = new Station("St. John's Wood", new ArrayList<>(List.of(Jubilee)), false, 2);
+    Station SwissCottage = new Station("Swiss Cottage", new ArrayList<>(List.of(Jubilee)), false, 2);
+    Station WestHampstead = new Station("West Hampstead", new ArrayList<>(List.of(Jubilee)), false, 2);
+    Station Kilburn = new Station("Kilburn", new ArrayList<>(List.of(Jubilee)), false, 3);
+    Station WillesdenGreen = new Station("Willesden Green", new ArrayList<>(List.of(Jubilee)), false, 3);
+    Station DollisHill = new Station("Dollis Hill", new ArrayList<>(List.of(Jubilee)), false, 3);
+    Station Neasden = new Station("Neasden", new ArrayList<>(List.of(Jubilee)), false, 3);
+    Station Kingsbury = new Station("Kingsbury", new ArrayList<>(List.of(Jubilee)), false, 4);
+    Station Queensbury = new Station("Queensbury", new ArrayList<>(List.of(Jubilee)), false, 4);
+    Station CanonsPark = new Station("Canons Park", new ArrayList<>(List.of(Jubilee)), false, 5);
+    Station Stanmore = new Station("Stanmore", new ArrayList<>(List.of(Jubilee)), true, 5);
+
 
     tflNetwork.addStation(new ArrayList<>(List.of(
         // Metropolitan (main snippet):
@@ -217,8 +243,15 @@ public class App extends Application {
         GloucesterRoad, EarlsCourt, BaronsCourt, Hammersmith, TurnhamGreen, ActonTown,
         EalingCommon, NorthEaling, ParkRoyal, Alperton, SudburyTown, SudburyHill, SouthHarrow,
         SouthEaling, Northfields, BostonManor, Osterley, HounslowEast, HounslowCentral,
-        HounslowWest, HattonCross, HeathrowTerminals2_3, HeathrowTerminal4, HeathrowTerminal5
+        HounslowWest, HattonCross, HeathrowTerminals2_3, HeathrowTerminal4, HeathrowTerminal5,
+        // Jubilee Line:
+        Stratford, WestHam, CanningTown, NorthGreenwich, CanaryWharf, CanadaWater, Bermondsey,
+        LondonBridge, Southwark, Waterloo, Westminster, GreenPark, BondStreet, BakerStreet,
+        StJohnsWood, SwissCottage, FinchleyRoad, WestHampstead, Kilburn, WillesdenGreen,
+        DollisHill, Neasden, WembleyPark, Kingsbury, Queensbury, CanonsPark, Stanmore
+
     )));
+
 
 
     tflNetwork.addEdge(Amersham, ChalfontLatimer, Metropolitan, 5, "Westbound", new ArrayList<>(List.of("Metropolitan Aldgate")));
@@ -388,6 +421,60 @@ public class App extends Application {
     tflNetwork.addEdge(HeathrowTerminal5, HeathrowTerminals2_3, Piccadilly, 4, "Eastbound", new ArrayList<>(List.of("Piccadilly Cockfosters")));
     tflNetwork.addEdge(HeathrowTerminal4, HeathrowTerminals2_3, Piccadilly, 4, "Northbound", new ArrayList<>(List.of("Piccadilly Heathrow T5"))); // Check direction
     tflNetwork.addEdge(HeathrowTerminals2_3, HeathrowTerminal4, Piccadilly, 4, "Southbound", new ArrayList<>(List.of("Piccadilly Heathrow T4"))); // Check direction
+    tflNetwork.addEdge(Stanmore, CanonsPark, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(CanonsPark, Queensbury, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(Queensbury, Kingsbury, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(Kingsbury, WembleyPark, Jubilee, 3, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(WembleyPark, Neasden, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(Neasden, DollisHill, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(DollisHill, WillesdenGreen, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(WillesdenGreen, Kilburn, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(Kilburn, WestHampstead, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(WestHampstead, FinchleyRoad, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(FinchleyRoad, SwissCottage, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(SwissCottage, StJohnsWood, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(StJohnsWood, BakerStreet, Jubilee, 3, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(BakerStreet, BondStreet, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(BondStreet, GreenPark, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(GreenPark, Westminster, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(Westminster, Waterloo, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(Waterloo, Southwark, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(Southwark, LondonBridge, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(LondonBridge, Bermondsey, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(Bermondsey, CanadaWater, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(CanadaWater, CanaryWharf, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(CanaryWharf, NorthGreenwich, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(NorthGreenwich, CanningTown, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(CanningTown, WestHam, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(WestHam, Stratford, Jubilee, 3, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
+    tflNetwork.addEdge(Stratford, WestHam, Jubilee, 3, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(WestHam, CanningTown, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(CanningTown, NorthGreenwich, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(NorthGreenwich, CanaryWharf, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(CanaryWharf, CanadaWater, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(CanadaWater, Bermondsey, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(Bermondsey, LondonBridge, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(LondonBridge, Southwark, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(Southwark, Waterloo, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(Waterloo, Westminster, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(Westminster, GreenPark, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(GreenPark, BondStreet, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(BondStreet, BakerStreet, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(BakerStreet, StJohnsWood, Jubilee, 3, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(StJohnsWood, SwissCottage, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(SwissCottage, FinchleyRoad, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(FinchleyRoad, WestHampstead, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(WestHampstead, Kilburn, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(Kilburn, WillesdenGreen, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(WillesdenGreen, DollisHill, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(DollisHill, Neasden, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(Neasden, WembleyPark, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(WembleyPark, Kingsbury, Jubilee, 3, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(Kingsbury, Queensbury, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(Queensbury, CanonsPark, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(CanonsPark, Stanmore, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+
+
 
     ObservableList<Station> stationList = FXCollections.observableArrayList(tflNetwork.getStations());
 
@@ -534,6 +621,7 @@ public class App extends Application {
                   Map<Line, String> lineColours = new HashMap<>();
                   lineColours.put(Metropolitan, "#9B0056");
                   lineColours.put(Piccadilly, "#003688");
+                  lineColours.put(Jubilee, "#A0A5A9");
 
                   // generating the outerHbox which contains the station lines and station descriptions
                   HBox outerHbox = new HBox();
