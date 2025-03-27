@@ -161,6 +161,16 @@ public class Network {
     return lines;
   }
 
+  public LinkedList<Line> findAllLinesAlongRoute(LinkedList<Edge> route) {
+    LinkedList<Line> allLines = new LinkedList<>();
+    for (Edge edge : route) {
+      if (!allLines.contains(edge.getLine())) {
+        allLines.add(edge.getLine());
+      }
+    }
+    return allLines;
+  }
+
   public LinkedList<ArrayList<String>> findAllSublinesAlongRoute(LinkedList<Edge> route) {
     LinkedList<ArrayList<String>> allSublines = new LinkedList<>();
     for (Edge edge : route) {

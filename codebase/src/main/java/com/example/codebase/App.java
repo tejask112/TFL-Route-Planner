@@ -9,6 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -474,8 +475,6 @@ public class App extends Application {
     tflNetwork.addEdge(Queensbury, CanonsPark, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
     tflNetwork.addEdge(CanonsPark, Stanmore, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
 
-
-
     ObservableList<Station> stationList = FXCollections.observableArrayList(tflNetwork.getStations());
 
     ComboBox<Station> srcStation = new ComboBox<>(stationList);
@@ -764,6 +763,28 @@ public class App extends Application {
                   resultBox.getChildren().add(outerHboxScrollPane);
                 });
 
+                // generating the lines
+                LinkedList<Line> listLines = tflNetwork.findAllLinesAlongRoute(route);
+                System.out.println("LINES: " + listLines);
+
+                ArrayList<ArrayList<String>> distruptedLines = new ArrayList<>();
+                for (Line line : listLines) {
+                  if (!getDistruptionForGivenLine(line.toString()).equals("empty")) {
+                    ArrayList<String> innerList = new ArrayList<>();
+                    innerList.add(line.toString());
+                    innerList.add(getDistruptionForGivenLine(line.toString()));
+                  }
+                }
+
+                distruptedLines.clear();
+                distruptedLines.add(new ArrayList<>(Arrays.asList("Jubilee","Minor Delays")));
+
+                for (ArrayList arr : distruptedLines) {
+
+                }
+
+
+
               }
             } catch (Exception exception1) {
               Platform.runLater(() -> {
@@ -814,8 +835,40 @@ public class App extends Application {
     }
   }
 
+  public static String getDistruptionForGivenLine(String line) {
+    try {
+      String urlString = "https://api.tfl.gov.uk/Line/" + line + "/Disruption";
+      URL url = new URL(urlString);
+      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+      // Request Headers from the API
+      connection.setRequestProperty("Cache-Control", "no-cache");
+      connection.setRequestMethod("GET");
+      int status = connection.getResponseCode();
+      if (status == 200) {
+        // reads the API response
+        BufferedReader in = new BufferedReader(new InputStreamReader((connection.getInputStream())));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+          content.append(inputLine);
+        }
+        in.close();
+        JSONArray jsonArray = new JSONArray(content.toString());
+
+        JSONObject response = jsonArray.getJSONObject(0);
+        return response.optString("description", "empty");
+      }
+      connection.disconnect();
+
+    } catch (Exception exception) {
+      System.out.print("exception:" + exception.getMessage());
+    }
+    return "empty";
+  }
+
   public static ArrayList<ArrayList<String>> getLiveStatuses() {
-    ArrayList<ArrayList<String>> apiResponse = new ArrayList<>();;
+    ArrayList<ArrayList<String>> apiResponse = new ArrayList<>();
     try {
       String urlString = "https://api.tfl.gov.uk/Line/Mode/tube/Status";
       URL url = new URL(urlString);
