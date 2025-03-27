@@ -41,10 +41,30 @@
   -fx-padding: 0 0 5 0;
 }
 
+.delays {
+  -fx-padding: 10 30 10 30;
+}
+
+.delayedBox {
+  -fx-background-color: #5A5F66;
+  -fx-padding: 10 30 10 30;
+  -fx-background-radius: 7px;
+}
+
+.delayedBoxDescription {
+  -fx-text-fill: white;
+  -fx-font-size: 16px;
+}
+
+.delayedBoxTitle {
+  -fx-padding: 2 0 0 0;
+  -fx-text-fill: white;
+  -fx-font-size: 16px;
+}
+
 .displayedTrainTimes {
   -fx-text-fill: white;
-  -fx-font-size: 14px;
-
+  -fx-font-size: 12px;
 }
 
 .individualLine {

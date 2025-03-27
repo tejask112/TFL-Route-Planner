@@ -627,7 +627,7 @@ public class App extends Application {
                   HBox outerExtenderHBox = new HBox();
                   outerExtenderHBox.setPrefHeight(40);
 
-                  VBox outerOuterHBox = new VBox(outerHbox, outerExtenderHBox);
+                  VBox outerOuterHBox = new VBox(outerHbox);
                   VBox timeAndRouteBox = new VBox();
                   timeAndRouteBox.setPrefWidth(165);
                   VBox stationsBox = new VBox();
@@ -760,31 +760,49 @@ public class App extends Application {
                       }
                     }
                   }
+
+                  // generating the lines
+                  LinkedList<Line> listLines = tflNetwork.findAllLinesAlongRoute(route);
+                  System.out.println("LINES: " + listLines);
+
+                  VBox delays = new VBox();
+                  delays.getStyleClass().add("delays");
+
+                  ArrayList<ArrayList<String>> distruptedLines = new ArrayList<>();
+                  for (Line line : listLines) {
+                    if (!getDistruptionForGivenLine(line.toString()).equals("empty")) {
+                      ArrayList<String> innerList = new ArrayList<>();
+                      innerList.add(line.toString());
+                      innerList.add(getDistruptionForGivenLine(line.toString()));
+                    }
+                  }
+
+                  distruptedLines.clear();
+                  distruptedLines.add(new ArrayList<>(Arrays.asList("Jubilee","Minor Delays")));
+                  distruptedLines.add(new ArrayList<>(Arrays.asList("Metropolitan","Minor Delays")));
+
+                  for (ArrayList arr : distruptedLines) {
+                    VBox delayedBox = new VBox();
+                    delayedBox.getStyleClass().add("delayedBox");
+
+                    Label title = new Label("Warning! " + arr.get(0) + " Delays");
+                    title.getStyleClass().add("delayedBoxTitle");
+                    Image warningLogo = new Image(getClass().getResourceAsStream("/images/warning-logo.png"));
+                    ImageView warningLogoImageView = new ImageView(warningLogo);
+                    warningLogoImageView.setFitWidth(30);
+                    warningLogoImageView.setFitHeight(30);
+                    warningLogoImageView.setPreserveRatio(true);
+                    HBox warningBox = new HBox(warningLogoImageView, title);
+
+                    Label description = new Label(arr.get(1).toString());
+                    description.getStyleClass().add("delayedBoxDescription");
+                    delayedBox.getChildren().addAll(warningBox, description);
+                    delays.getChildren().add(delayedBox);
+                  }
+
+                  outerOuterHBox.getChildren().addAll(delays, outerExtenderHBox);
                   resultBox.getChildren().add(outerHboxScrollPane);
                 });
-
-                // generating the lines
-                LinkedList<Line> listLines = tflNetwork.findAllLinesAlongRoute(route);
-                System.out.println("LINES: " + listLines);
-
-                ArrayList<ArrayList<String>> distruptedLines = new ArrayList<>();
-                for (Line line : listLines) {
-                  if (!getDistruptionForGivenLine(line.toString()).equals("empty")) {
-                    ArrayList<String> innerList = new ArrayList<>();
-                    innerList.add(line.toString());
-                    innerList.add(getDistruptionForGivenLine(line.toString()));
-                  }
-                }
-
-                distruptedLines.clear();
-                distruptedLines.add(new ArrayList<>(Arrays.asList("Jubilee","Minor Delays")));
-
-                for (ArrayList arr : distruptedLines) {
-
-                }
-
-
-
               }
             } catch (Exception exception1) {
               Platform.runLater(() -> {
