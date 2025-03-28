@@ -53,18 +53,19 @@
 
 .delayedBoxDescription {
   -fx-text-fill: white;
-  -fx-font-size: 16px;
+  -fx-font-size: 14px;
 }
 
 .delayedBoxTitle {
-  -fx-padding: 2 0 0 0;
+  -fx-padding: -2 0 0 0;
   -fx-text-fill: white;
   -fx-font-size: 16px;
+  -fx-font-weight: bold;
 }
 
 .displayedTrainTimes {
   -fx-text-fill: white;
-  -fx-font-size: 12px;
+  -fx-font-size: 14px;
 }
 
 .individualLine {

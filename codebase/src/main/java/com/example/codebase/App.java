@@ -128,6 +128,7 @@ public class App extends Application {
     Line Metropolitan = new Line("Metropolitan", Boolean.TRUE);
     Line Piccadilly = new Line("Piccadilly", Boolean.FALSE);
     Line Jubilee = new Line("Jubilee", Boolean.FALSE);
+    Line Central = new Line("Central", Boolean.FALSE);
 
     // Create stations
     Station Amersham = new Station("Amersham", new ArrayList<>(List.of(Metropolitan)), true, 9);
@@ -770,16 +771,14 @@ public class App extends Application {
 
                   ArrayList<ArrayList<String>> distruptedLines = new ArrayList<>();
                   for (Line line : listLines) {
-                    if (!getDistruptionForGivenLine(line.toString()).equals("empty")) {
+                    String apiResponse = getDistruptionForGivenLine(line.toString());
+                    if (!apiResponse.equals("empty")) {
                       ArrayList<String> innerList = new ArrayList<>();
                       innerList.add(line.toString());
-                      innerList.add(getDistruptionForGivenLine(line.toString()));
+                      innerList.add(apiResponse);
+                      distruptedLines.add(innerList);
                     }
                   }
-
-                  distruptedLines.clear();
-                  distruptedLines.add(new ArrayList<>(Arrays.asList("Jubilee","Minor Delays")));
-                  distruptedLines.add(new ArrayList<>(Arrays.asList("Metropolitan","Minor Delays")));
 
                   for (ArrayList arr : distruptedLines) {
                     VBox delayedBox = new VBox();
@@ -789,15 +788,19 @@ public class App extends Application {
                     title.getStyleClass().add("delayedBoxTitle");
                     Image warningLogo = new Image(getClass().getResourceAsStream("/images/warning-logo.png"));
                     ImageView warningLogoImageView = new ImageView(warningLogo);
-                    warningLogoImageView.setFitWidth(30);
-                    warningLogoImageView.setFitHeight(30);
+                    warningLogoImageView.setFitWidth(20);
+                    warningLogoImageView.setFitHeight(20);
                     warningLogoImageView.setPreserveRatio(true);
                     HBox warningBox = new HBox(warningLogoImageView, title);
 
                     Label description = new Label(arr.get(1).toString());
                     description.getStyleClass().add("delayedBoxDescription");
                     delayedBox.getChildren().addAll(warningBox, description);
-                    delays.getChildren().add(delayedBox);
+
+                    HBox fillerBox = new HBox();
+                    fillerBox.setMinHeight(20);
+
+                    delays.getChildren().addAll(fillerBox, delayedBox);
                   }
 
                   outerOuterHBox.getChildren().addAll(delays, outerExtenderHBox);
