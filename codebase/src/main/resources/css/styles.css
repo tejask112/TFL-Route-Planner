@@ -135,11 +135,16 @@
   -fx-text-fill: white;
 }
 
-
 .noStationsError {
   -fx-font-weight: bold;
   -fx-padding: 5px 20px;
   -fx-text-fill: #a90202;
+}
+
+.noTrainsToDisplay {
+  -fx-font-weight: bold;
+  -fx-padding: 0px 0px 10px 0px;
+  -fx-text-fill: white;
 }
 
 .planJourneyButton {

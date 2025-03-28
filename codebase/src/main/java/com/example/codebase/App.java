@@ -428,8 +428,6 @@ public class App extends Application {
     tflNetwork.addEdge(Queensbury, Kingsbury, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
     tflNetwork.addEdge(Kingsbury, WembleyPark, Jubilee, 3, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
     tflNetwork.addEdge(WembleyPark, Neasden, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
-    tflNetwork.addEdge(Neasden, DollisHill, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
-    tflNetwork.addEdge(DollisHill, WillesdenGreen, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
     tflNetwork.addEdge(WillesdenGreen, Kilburn, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
     tflNetwork.addEdge(Kilburn, WestHampstead, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
     tflNetwork.addEdge(WestHampstead, FinchleyRoad, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stratford")));
@@ -468,13 +466,16 @@ public class App extends Application {
     tflNetwork.addEdge(FinchleyRoad, WestHampstead, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
     tflNetwork.addEdge(WestHampstead, Kilburn, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
     tflNetwork.addEdge(Kilburn, WillesdenGreen, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
-    tflNetwork.addEdge(WillesdenGreen, DollisHill, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
-    tflNetwork.addEdge(DollisHill, Neasden, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
     tflNetwork.addEdge(Neasden, WembleyPark, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
     tflNetwork.addEdge(WembleyPark, Kingsbury, Jubilee, 3, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
     tflNetwork.addEdge(Kingsbury, Queensbury, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
     tflNetwork.addEdge(Queensbury, CanonsPark, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
     tflNetwork.addEdge(CanonsPark, Stanmore, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore")));
+    tflNetwork.addEdge(Neasden, DollisHill, Jubilee, 2, "Eastbound", new ArrayList<>(List.of("Jubilee Stanmore", "Jubilee Wembley Park")));
+    tflNetwork.addEdge(DollisHill, WillesdenGreen, Jubilee, 2, "Southbound", new ArrayList<>(List.of("Jubilee Stratford", "Jubilee West Ham")));
+    tflNetwork.addEdge(WillesdenGreen, DollisHill, Jubilee, 2, "Northbound", new ArrayList<>(List.of("Jubilee Stanmore", "Jubilee Wembley Park")));
+    tflNetwork.addEdge(DollisHill, Neasden, Jubilee, 2, "Westbound", new ArrayList<>(List.of("Jubilee Stanmore", "Jubilee Wembley Park")));
+
 
     ObservableList<Station> stationList = FXCollections.observableArrayList(tflNetwork.getStations());
 
@@ -601,13 +602,13 @@ public class App extends Application {
           } else {
             errorLabel.setText("");
             LinkedList<Edge> route = tflNetwork.findRoute(srcStation.getValue(), destStation.getValue());
-            System.out.println("ROUTE: " + route);
             try {
               if (route.isEmpty()) {
                 throw new Exception("Departure and Arrival stations must be distinct");
               } else {
                 Platform.runLater(() -> {
                   resultBox.getChildren().clear();
+                  System.out.println("ROUTE: " + route);
 
                   // generates the top title bar
                   HBox destinationMessageHBox = new HBox();
@@ -635,6 +636,68 @@ public class App extends Application {
                   HBox.setHgrow(stationsBox, Priority.ALWAYS);
                   stationsBox.setMaxWidth(Double.MAX_VALUE);
 
+                  // generated all the sublines along a route
+                  LinkedList<ArrayList<String>> allSublines = tflNetwork.findAllSublinesAlongRoute(route);
+                  System.out.println("ALL LINES: " + allSublines);
+
+                  // generating the sublines
+                  LinkedList<String> listSubLines = tflNetwork.findSubLinesAlongRoute(route);
+                  System.out.println("SUBLINES: " + listSubLines);
+
+                  // handling the TFL API call for the first train to take
+                  JSONObject departureJson = new JSONObject();
+                  try {
+                    departureJson = getTimeOfTrainArrival(returnNaptanFromCsv(srcStation.getValue().getName()), route.get(0).getLine().toString(), listSubLines.peek(), route.get(0).getTravellingDirection());
+                  } catch (Exception ex) {
+                    Platform.runLater(() -> {
+                      errorLabel.setText(ex.getMessage());
+                    });
+                  }
+
+                  String platformName = null, expectedArrival = null;
+
+                  if (departureJson != null) {
+                    platformName = departureJson.optString("platformName");
+                    expectedArrival = departureJson.optString("expectedArrival");
+                    expectedArrival = expectedArrival.substring(expectedArrival.indexOf('T') + 1);
+                    expectedArrival = expectedArrival.substring(0, 5);
+                  } else {
+                    platformName = route.get(0).getTravellingDirection();
+                    LocalTime currentTime = LocalTime.now();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+                    String formattedTime = currentTime.format(formatter);
+                    expectedArrival = formattedTime;
+
+                    VBox noLiveInfoBox = new VBox();
+                    noLiveInfoBox.getStyleClass().add("delays");
+
+                    VBox delayedBox = new VBox();
+                    delayedBox.getStyleClass().add("delayedBox");
+
+                    Label title = new Label("Warning! No trains available");
+                    title.getStyleClass().add("delayedBoxTitle");
+                    Image warningLogo = new Image(getClass().getResourceAsStream("/images/warning-logo.png"));
+                    ImageView warningLogoImageView = new ImageView(warningLogo);
+                    warningLogoImageView.setFitWidth(20);
+                    warningLogoImageView.setFitHeight(20);
+                    warningLogoImageView.setPreserveRatio(true);
+                    HBox warningBox = new HBox(warningLogoImageView, title);
+
+                    Label description1 = new Label("We couldn't find any live trains at the moment.");
+                    Label description2 = new Label("This might be due to temporary gaps in service or real-time updates. Please try again in a few minutes.");
+                    description1.getStyleClass().add("delayedBoxDescription");
+                    description2.getStyleClass().add("delayedBoxDescription");
+                    description1.setWrapText(Boolean.TRUE);
+                    description2.setWrapText(Boolean.TRUE);
+                    delayedBox.getChildren().addAll(warningBox, description1, description2);
+
+                    HBox fillerBox = new HBox();
+                    fillerBox.setMinHeight(20);
+
+                    noLiveInfoBox.getChildren().addAll(delayedBox, fillerBox);
+                    outerOuterHBox.getChildren().add(noLiveInfoBox);
+                  }
+
                   // generating the scroll bar
                   ScrollPane outerHboxScrollPane = new ScrollPane(outerOuterHBox);
                   outerHboxScrollPane.setFitToWidth(true);
@@ -655,14 +718,6 @@ public class App extends Application {
                   originLine.setStyle("-fx-background-color: "+lineColours.get(route.get(0).getLine()));
                   originBox.getChildren().addAll(originTitle, originLine);
 
-                  // generated all the sublines along a route
-                  LinkedList<ArrayList<String>> allSublines = tflNetwork.findAllSublinesAlongRoute(route);
-                  System.out.println("ALL LINES: " + allSublines);
-
-                  // generating the sublines
-                  LinkedList<String> listSubLines = tflNetwork.findSubLinesAlongRoute(route);
-                  System.out.println("SUBLINES: " + listSubLines);
-
                   // generate button to view other lines to take
                   HBox innerTimeLabel = new HBox();
                   VBox buttonBox = new VBox();
@@ -671,31 +726,6 @@ public class App extends Application {
                   buttonBox.getStyleClass().add("trainDepartureButtonBox");
                   buttonBox.getChildren().add(viewNextTrainsAtDeparture);
                   innerTimeLabel.getChildren().add(buttonBox);
-
-                  // handling the TFL API call for the first train to take
-                  JSONObject departureJson = new JSONObject();
-                  try {
-                    departureJson = getTimeOfTrainArrival(returnNaptanFromCsv(srcStation.getValue().getName()), route.get(0).getLine().toString(), listSubLines.peek(), route.get(0).getTravellingDirection());
-                  } catch (Exception ex) {
-                    Platform.runLater(() -> {
-                      errorLabel.setText(ex.getMessage());
-                    });
-                  }
-
-                  String platformName = null, expectedArrival = null;
-
-                  if (departureJson != null) {
-                    platformName = departureJson.optString("platformName");
-                    expectedArrival = departureJson.optString("expectedArrival");
-                    expectedArrival = expectedArrival.substring(expectedArrival.indexOf('T') + 1);
-                    expectedArrival = expectedArrival.substring(0, 5);
-                  } else {
-                    LocalTime currentTime = LocalTime.now();
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-                    String formattedTime = currentTime.format(formatter);
-                    expectedArrival = formattedTime;
-                    System.out.println("NO LIVE TRAIN FEED AVAILABLE");
-                  }
 
                   // generating the time label for when the first train arrives
                   Label departureTimeLabel = new Label(expectedArrival);
@@ -718,9 +748,8 @@ public class App extends Application {
                     }
                   } else {
                     departureSubline = listSubLines.peek();
-                    platformName = route.get(0).getTravellingDirection();
                   }
-                  Label boardLabel = new Label("Board "+ departureSubline +" | "+platformName);
+                  Label boardLabel = new Label("Board "+ departureSubline + " | " + platformName);
                   boardLabel.getStyleClass().add("boardLabel");
                   stationsBox.getChildren().add(originBox);
                   stationsBox.getChildren().add(boardLabel);
@@ -1058,139 +1087,144 @@ public class App extends Application {
     liveTimesContainer.getChildren().add(topBar);
 
     String apiResponse = String.valueOf(retrieveNextTrainFromAPI(naptan, line));
-    System.out.println("API RESPONSE FOR DISPLAYING TRAINS: " + apiResponse);
     // Modify method argument to remove the name of the line#
     JSONArray jsonArray = new JSONArray(apiResponse);
     List<JSONObject> filteredByDirection = filterJSONresponse(jsonArray, platformInput);
     filteredByDirection.sort(Comparator.comparingInt(obj -> obj.getInt("timeToStation")));
 
-    JSONObject timings = filteredByDirection.get(0).getJSONObject("timing");
-    String requestSent = timings.getString("sent");
-    requestSent = requestSent.substring(11,16);
-    Label requestSentLabel = new Label("Arrival Board last updated at " + requestSent + ". Refresh for latest timings.");
-    requestSentLabel.getStyleClass().add("arrivalBoardRequestTime");
-    liveTimesContainer.getChildren().add(requestSentLabel);
+    if (!filteredByDirection.isEmpty()) {
+      JSONObject timings = filteredByDirection.get(0).getJSONObject("timing");
+      String requestSent = timings.getString("sent");
+      requestSent = requestSent.substring(11,16);
+      Label requestSentLabel = new Label("Arrival Board last updated at " + requestSent + ". Refresh for latest timings.");
+      requestSentLabel.getStyleClass().add("arrivalBoardRequestTime");
+      liveTimesContainer.getChildren().add(requestSentLabel);
 
-    HBox liveTimesHeading = new HBox();
-    Label platformHeading = new Label("Platform");
-    platformHeading.getStyleClass().add("liveTimesHeading");
-    platformHeading.setMinWidth(200);
-    Label towardsHeading = new Label("Towards");
-    towardsHeading.getStyleClass().add("liveTimesHeading");
-    towardsHeading.setMinWidth(200);
-    Label arrivalHeading = new Label("Arrival");
-    arrivalHeading.getStyleClass().add("liveTimesHeading");
-    arrivalHeading.setMinWidth(110);
-    Label timeToStationHeading = new Label("Arriving in");
-    timeToStationHeading.getStyleClass().add("liveTimesHeading");
-    timeToStationHeading.setMinWidth(110);
-    Label currentLocationHeading = new Label("Current Location");
-    currentLocationHeading.getStyleClass().add("liveTimesHeading");
-    HBox.setHgrow(currentLocationHeading, Priority.ALWAYS);
-    liveTimesHeading.getChildren().addAll(platformHeading, towardsHeading, arrivalHeading, timeToStationHeading, currentLocationHeading);
-    liveTimesContainer.getChildren().add(liveTimesHeading);
+      HBox liveTimesHeading = new HBox();
+      Label platformHeading = new Label("Platform");
+      platformHeading.getStyleClass().add("liveTimesHeading");
+      platformHeading.setMinWidth(200);
+      Label towardsHeading = new Label("Towards");
+      towardsHeading.getStyleClass().add("liveTimesHeading");
+      towardsHeading.setMinWidth(200);
+      Label arrivalHeading = new Label("Arrival");
+      arrivalHeading.getStyleClass().add("liveTimesHeading");
+      arrivalHeading.setMinWidth(110);
+      Label timeToStationHeading = new Label("Arriving in");
+      timeToStationHeading.getStyleClass().add("liveTimesHeading");
+      timeToStationHeading.setMinWidth(110);
+      Label currentLocationHeading = new Label("Current Location");
+      currentLocationHeading.getStyleClass().add("liveTimesHeading");
+      HBox.setHgrow(currentLocationHeading, Priority.ALWAYS);
+      liveTimesHeading.getChildren().addAll(platformHeading, towardsHeading, arrivalHeading, timeToStationHeading, currentLocationHeading);
+      liveTimesContainer.getChildren().add(liveTimesHeading);
 
-    VBox liveResults = new VBox();
+      VBox liveResults = new VBox();
 
-    ScrollPane arrivalBoardTrainInfo = new ScrollPane(liveResults);
-    liveTimesContainer.getChildren().add(arrivalBoardTrainInfo);
-    arrivalBoardTrainInfo.setFitToWidth(true);
-    arrivalBoardTrainInfo.setFitToHeight(true);
-    arrivalBoardTrainInfo.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-    arrivalBoardTrainInfo.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+      ScrollPane arrivalBoardTrainInfo = new ScrollPane(liveResults);
+      liveTimesContainer.getChildren().add(arrivalBoardTrainInfo);
+      arrivalBoardTrainInfo.setFitToWidth(true);
+      arrivalBoardTrainInfo.setFitToHeight(true);
+      arrivalBoardTrainInfo.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+      arrivalBoardTrainInfo.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
-    ArrayList<Label> timeLabels = new ArrayList<>();
+      ArrayList<Label> timeLabels = new ArrayList<>();
 
-    for (JSONObject object : filteredByDirection) {
-      // fetching arrival time
-      String arrival = object.getString("expectedArrival");
-      arrival = arrival.substring(arrival.indexOf('T') + 1);
-      arrival = arrival.substring(0, 5);
+      for (JSONObject object : filteredByDirection) {
+        // fetching arrival time
+        String arrival = object.getString("expectedArrival");
+        arrival = arrival.substring(arrival.indexOf('T') + 1);
+        arrival = arrival.substring(0, 5);
 
-      // placing data inside labels
-      Label platformName = new Label(object.getString("platformName"));
-      platformName.setMinWidth(200);
-      platformName.getStyleClass().add("liveTrainRow");
-      HBox.setHgrow(platformName, Priority.NEVER);
+        // placing data inside labels
+        Label platformName = new Label(object.getString("platformName"));
+        platformName.setMinWidth(200);
+        platformName.getStyleClass().add("liveTrainRow");
+        HBox.setHgrow(platformName, Priority.NEVER);
 
-      Label towards = new Label(object.optString("towards", "Check Front of Train"));
-      towards.setMinWidth(200);
-      towards.getStyleClass().add("liveTrainRow");
-      HBox.setHgrow(towards, Priority.NEVER);
+        Label towards = new Label(object.optString("towards", "Check Front of Train"));
+        towards.setMinWidth(200);
+        towards.getStyleClass().add("liveTrainRow");
+        HBox.setHgrow(towards, Priority.NEVER);
 
-      Label expectedArrival = new Label(arrival);
-      expectedArrival.setMinWidth(110);
-      expectedArrival.getStyleClass().add("liveTrainRow");
-      HBox.setHgrow(expectedArrival, Priority.NEVER);
+        Label expectedArrival = new Label(arrival);
+        expectedArrival.setMinWidth(110);
+        expectedArrival.getStyleClass().add("liveTrainRow");
+        HBox.setHgrow(expectedArrival, Priority.NEVER);
 
-      Label trainArrivalCountdown = new Label();
-      if (object.optString("currentLocation").equals("At Platform")) {
-        trainArrivalCountdown.setText("Arrived");
-      } else {
-        int arrivalCountdown = Integer.parseInt(Integer.toString(object.getInt("timeToStation")));
-        int minutes = arrivalCountdown/60;
-        int seconds = arrivalCountdown%60;
-        if (String.valueOf(seconds).length() == 1) {
-          trainArrivalCountdown.setText(minutes + ":0" + seconds + " mins");
+        Label trainArrivalCountdown = new Label();
+        if (object.optString("currentLocation").equals("At Platform")) {
+          trainArrivalCountdown.setText("Arrived");
         } else {
-          trainArrivalCountdown.setText(minutes + ":" + seconds + " mins");
-        }
-        timeLabels.add(trainArrivalCountdown);
-      }
-
-      trainArrivalCountdown.setMinWidth(110);
-      trainArrivalCountdown.getStyleClass().add("liveTrainRow");
-      HBox.setHgrow(trainArrivalCountdown, Priority.NEVER);
-
-      Label currentLocation = new Label(object.optString("currentLocation"));
-      currentLocation.getStyleClass().add("liveTrainRow");
-      HBox.setHgrow(currentLocation, Priority.ALWAYS);
-      currentLocation.setWrapText(true);
-
-      HBox liveTrainRow = new HBox(platformName, towards, expectedArrival, trainArrivalCountdown, currentLocation);
-
-      liveResults.getChildren().add(liveTrainRow);
-    }
-    root.setCenter(liveTimesContainer);
-
-    Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
-      for (Label label : timeLabels) {
-        try {
-          String currentValue = label.getText();
-          int mins = Integer.parseInt(currentValue.substring(0, currentValue.indexOf(":")));
-          int seconds = Integer.parseInt(currentValue.substring(currentValue.indexOf(":")+1, currentValue.indexOf("m")-1));
-          int totalTime = (mins * 60) + seconds;
-
-          if (totalTime > 0) {
-            totalTime--;
-            int newMins = totalTime/60;
-            int newSeconds = totalTime%60;
-            if (String.valueOf(newSeconds).length() == 1) {
-              label.setText(newMins + ":0" + newSeconds + " mins");
-            } else {
-              label.setText(newMins + ":" + newSeconds + " mins");
-            }
+          int arrivalCountdown = Integer.parseInt(Integer.toString(object.getInt("timeToStation")));
+          int minutes = arrivalCountdown/60;
+          int seconds = arrivalCountdown%60;
+          if (String.valueOf(seconds).length() == 1) {
+            trainArrivalCountdown.setText(minutes + ":0" + seconds + " mins");
           } else {
-            label.setText("Arrived");
-            timeLabels.remove(label);
-            break;
+            trainArrivalCountdown.setText(minutes + ":" + seconds + " mins");
           }
-
-        } catch (Exception e) {
-          System.err.println("Error: " + e);
+          timeLabels.add(trainArrivalCountdown);
         }
+
+        trainArrivalCountdown.setMinWidth(110);
+        trainArrivalCountdown.getStyleClass().add("liveTrainRow");
+        HBox.setHgrow(trainArrivalCountdown, Priority.NEVER);
+
+        Label currentLocation = new Label(object.optString("currentLocation"));
+        currentLocation.getStyleClass().add("liveTrainRow");
+        HBox.setHgrow(currentLocation, Priority.ALWAYS);
+        currentLocation.setWrapText(true);
+
+        HBox liveTrainRow = new HBox(platformName, towards, expectedArrival, trainArrivalCountdown, currentLocation);
+
+        liveResults.getChildren().add(liveTrainRow);
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+          for (Label label : timeLabels) {
+            try {
+              String currentValue = label.getText();
+              int mins = Integer.parseInt(currentValue.substring(0, currentValue.indexOf(":")));
+              int seconds = Integer.parseInt(currentValue.substring(currentValue.indexOf(":")+1, currentValue.indexOf("m")-1));
+              int totalTime = (mins * 60) + seconds;
+
+              if (totalTime > 0) {
+                totalTime--;
+                int newMins = totalTime/60;
+                int newSeconds = totalTime%60;
+                if (String.valueOf(newSeconds).length() == 1) {
+                  label.setText(newMins + ":0" + newSeconds + " mins");
+                } else {
+                  label.setText(newMins + ":" + newSeconds + " mins");
+                }
+              } else {
+                label.setText("Arrived");
+                timeLabels.remove(label);
+                break;
+              }
+
+            } catch (Exception e) {
+              System.err.println("Error: " + e);
+            }
+          }
+        }));
+
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+
+        displayTrainsStage.setOnCloseRequest((WindowEvent event) -> {
+          if (timeline != null) {
+            timeline.stop();
+          }
+        });
       }
-    }));
+    } else {
+      Label noTrainsToDisplayLabel = new Label("There are currently no live train data to display. Please try again later");
+      noTrainsToDisplayLabel.getStyleClass().add("noTrainsToDisplay");
+      liveTimesContainer.getChildren().add(noTrainsToDisplayLabel);
+    }
 
-    timeline.setCycleCount(Timeline.INDEFINITE);
-    timeline.play();
-
-    displayTrainsStage.setOnCloseRequest((WindowEvent event) -> {
-      if (timeline != null) {
-        timeline.stop();
-      }
-    });
-
+    root.setCenter(liveTimesContainer);
     displayTrainsStage.setScene(scene);
     scene.getStylesheets().add(App.class.getResource("/css/styles.css").toExternalForm());
     displayTrainsStage.setTitle(station + " Arrival Board");
