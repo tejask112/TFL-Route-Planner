@@ -681,10 +681,21 @@ public class App extends Application {
                       errorLabel.setText(ex.getMessage());
                     });
                   }
-                  String platformName = departureJson.getString("platformName");
-                  String expectedArrival = departureJson.getString("expectedArrival");
-                  expectedArrival = expectedArrival.substring(expectedArrival.indexOf('T') + 1);
-                  expectedArrival = expectedArrival.substring(0, 5);
+
+                  String platformName = null, expectedArrival = null;
+
+                  if (departureJson != null) {
+                    platformName = departureJson.optString("platformName");
+                    expectedArrival = departureJson.optString("expectedArrival");
+                    expectedArrival = expectedArrival.substring(expectedArrival.indexOf('T') + 1);
+                    expectedArrival = expectedArrival.substring(0, 5);
+                  } else {
+                    LocalTime currentTime = LocalTime.now();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+                    String formattedTime = currentTime.format(formatter);
+                    expectedArrival = formattedTime;
+                    System.out.println("NO LIVE TRAIN FEED AVAILABLE");
+                  }
 
                   // generating the time label for when the first train arrives
                   Label departureTimeLabel = new Label(expectedArrival);
@@ -699,10 +710,15 @@ public class App extends Application {
 
                   // generating the label instructing user to board subline at which platform.
                   String departureSubline = null;
-                  if (departureJson.getString("towards").equals("Check Front of Train")) {
-                    departureSubline = listSubLines.get(0);
+                  if (departureJson != null) {
+                    if (departureJson.optString("towards").equals("Check Front of Train")) {
+                      departureSubline = listSubLines.get(0);
+                    } else {
+                      departureSubline = route.get(0).getLine().toString() + " " + departureJson.getString("towards");
+                    }
                   } else {
-                    departureSubline = route.get(0).getLine().toString() + " " + departureJson.getString("towards");
+                    departureSubline = listSubLines.peek();
+                    platformName = route.get(0).getTravellingDirection();
                   }
                   Label boardLabel = new Label("Board "+ departureSubline +" | "+platformName);
                   boardLabel.getStyleClass().add("boardLabel");
@@ -881,7 +897,6 @@ public class App extends Application {
         return response.optString("description", "empty");
       }
       connection.disconnect();
-
     } catch (Exception exception) {
       System.out.print("exception:" + exception.getMessage());
     }
@@ -1043,6 +1058,7 @@ public class App extends Application {
     liveTimesContainer.getChildren().add(topBar);
 
     String apiResponse = String.valueOf(retrieveNextTrainFromAPI(naptan, line));
+    System.out.println("API RESPONSE FOR DISPLAYING TRAINS: " + apiResponse);
     // Modify method argument to remove the name of the line#
     JSONArray jsonArray = new JSONArray(apiResponse);
     List<JSONObject> filteredByDirection = filterJSONresponse(jsonArray, platformInput);
@@ -1082,8 +1098,6 @@ public class App extends Application {
     arrivalBoardTrainInfo.setFitToHeight(true);
     arrivalBoardTrainInfo.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
     arrivalBoardTrainInfo.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-
-
 
     ArrayList<Label> timeLabels = new ArrayList<>();
 
