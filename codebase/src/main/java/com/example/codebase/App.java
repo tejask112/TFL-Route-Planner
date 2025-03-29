@@ -4,36 +4,27 @@ import com.example.codebase.Network.Edge;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -48,7 +39,6 @@ import javafx.scene.control.Label;
 import javafx.geometry.Pos;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
-import javafx.util.StringConverter;
 import java.time.LocalTime;
 import com.opencsv.CSVReader;
 import org.json.JSONArray;
@@ -129,6 +119,7 @@ public class App extends Application {
     Line Piccadilly = new Line("Piccadilly", Boolean.FALSE);
     Line Jubilee = new Line("Jubilee", Boolean.FALSE);
     Line Central = new Line("Central", Boolean.FALSE);
+    Line Victoria = new Line("Victoria", Boolean.FALSE);
 
     // Create stations
     Station Amersham = new Station("Amersham", new ArrayList<>(List.of(Metropolitan)), true, 9);
@@ -175,7 +166,7 @@ public class App extends Application {
     Station ManorHouse = new Station("Manor House", new ArrayList<>(List.of(Piccadilly)), false, 2);
     Station FinsburyPark = new Station("Finsbury Park", new ArrayList<>(List.of(Piccadilly)), false, 2);
     Station RussellSquare = new Station("Russell Square", new ArrayList<>(List.of(Piccadilly)), false, 1);
-    Station Holborn = new Station("Holborn", new ArrayList<>(List.of(Piccadilly)), false, 1);
+    Station Holborn = new Station("Holborn", new ArrayList<>(List.of(Central, Piccadilly)), true, 1);
     Station CoventGarden = new Station("Covent Garden", new ArrayList<>(List.of(Piccadilly)), false, 1);
     Station LeicesterSquare = new Station("Leicester Square", new ArrayList<>(List.of(Piccadilly)), false, 1);
     Station PiccadillyCircus = new Station("Piccadilly Circus", new ArrayList<>(List.of(Piccadilly)), false, 1);
@@ -207,7 +198,7 @@ public class App extends Application {
     Station HeathrowTerminals2_3 = new Station("Heathrow Terminals 2 & 3", new ArrayList<>(List.of(Piccadilly)), true, 6);
     Station HeathrowTerminal4 = new Station("Heathrow Terminal 4", new ArrayList<>(List.of(Piccadilly)), true, 6);
     Station HeathrowTerminal5 = new Station("Heathrow Terminal 5", new ArrayList<>(List.of(Piccadilly)), true, 6);
-    Station Stratford = new Station("Stratford", new ArrayList<>(List.of(Jubilee)), true, 4);
+    Station Stratford = new Station("Stratford", new ArrayList<>(List.of(Central, Jubilee)), true, 3);
     Station WestHam = new Station("West Ham", new ArrayList<>(List.of(Jubilee)), true, 3);
     Station CanningTown = new Station("Canning Town", new ArrayList<>(List.of(Jubilee)), true, 3);
     Station NorthGreenwich = new Station("North Greenwich", new ArrayList<>(List.of(Jubilee)), true, 2);
@@ -218,7 +209,7 @@ public class App extends Application {
     Station Southwark = new Station("Southwark", new ArrayList<>(List.of(Jubilee)), false, 1);
     Station Waterloo = new Station("Waterloo", new ArrayList<>(List.of(Jubilee)), true, 1);
     Station Westminster = new Station("Westminster", new ArrayList<>(List.of(Jubilee)), true, 1);
-    Station BondStreet = new Station("Bond Street", new ArrayList<>(List.of(Jubilee)), true, 1);
+    Station BondStreet = new Station("Bond Street", new ArrayList<>(List.of(Central, Jubilee)), true, 1);
     Station StJohnsWood = new Station("St. John's Wood", new ArrayList<>(List.of(Jubilee)), false, 2);
     Station SwissCottage = new Station("Swiss Cottage", new ArrayList<>(List.of(Jubilee)), false, 2);
     Station WestHampstead = new Station("West Hampstead", new ArrayList<>(List.of(Jubilee)), false, 2);
@@ -230,6 +221,7 @@ public class App extends Application {
     Station Queensbury = new Station("Queensbury", new ArrayList<>(List.of(Jubilee)), false, 4);
     Station CanonsPark = new Station("Canons Park", new ArrayList<>(List.of(Jubilee)), false, 5);
     Station Stanmore = new Station("Stanmore", new ArrayList<>(List.of(Jubilee)), true, 5);
+    Station NottingHillGate = new Station("Notting Hill Gate", new ArrayList<>(List.of(Central)), true, 2);
 
 
     tflNetwork.addStation(new ArrayList<>(List.of(
@@ -368,9 +360,9 @@ public class App extends Application {
     tflNetwork.addEdge(Hammersmith, BaronsCourt, Piccadilly, 1, "Eastbound", new ArrayList<>(List.of("Piccadilly Cockfosters")));
     tflNetwork.addEdge(Hammersmith, TurnhamGreen, Piccadilly, 4, "Westbound", new ArrayList<>(List.of("Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
     tflNetwork.addEdge(TurnhamGreen, Hammersmith, Piccadilly, 4, "Eastbound", new ArrayList<>(List.of("Piccadilly Cockfosters")));
-    tflNetwork.addEdge(TurnhamGreen, ActonTown, Piccadilly, 3, "Westbound", new ArrayList<>(List.of("Piccadilly Cockfosters")));
-    tflNetwork.addEdge(ActonTown, TurnhamGreen, Piccadilly, 3, "Eastbound", new ArrayList<>(List.of("Piccadilly Heathrow T5", "Piccadilly Heathrow T4")));
-    tflNetwork.addEdge(ActonTown, EalingCommon, Piccadilly, 2, "Westbound", new ArrayList<>(List.of("Piccadilly Uxbridge")));
+    tflNetwork.addEdge(TurnhamGreen, ActonTown, Piccadilly, 3, "Westbound", new ArrayList<>(List.of("Piccadilly Uxbridge")));
+    tflNetwork.addEdge(ActonTown, TurnhamGreen, Piccadilly, 3, "Eastbound", new ArrayList<>(List.of("Piccadilly Cockfosters")));
+    tflNetwork.addEdge(ActonTown, EalingCommon, Piccadilly, 2, "Westbound", new ArrayList<>(List.of("Piccadilly Uxbridge", "Piccadilly Heathrow T4", "Piccadilly Heathrow T5")));
     tflNetwork.addEdge(EalingCommon, ActonTown, Piccadilly, 2, "Eastbound", new ArrayList<>(List.of("Piccadilly Cockfosters")));
     tflNetwork.addEdge(EalingCommon, NorthEaling, Piccadilly, 2, "Westbound", new ArrayList<>(List.of("Piccadilly Uxbridge")));
     tflNetwork.addEdge(NorthEaling, EalingCommon, Piccadilly, 2, "Eastbound", new ArrayList<>(List.of("Piccadilly Cockfosters")));
@@ -399,7 +391,7 @@ public class App extends Application {
     tflNetwork.addEdge(Hillingdon, Uxbridge, Piccadilly, 2, "Westbound", new ArrayList<>(List.of("Piccadilly Uxbridge")));
     tflNetwork.addEdge(Uxbridge, Hillingdon, Piccadilly, 2, "Eastbound", new ArrayList<>(List.of("Piccadilly Cockfosters")));
     tflNetwork.addEdge(Hillingdon, Uxbridge, Piccadilly, 2, "Westbound", new ArrayList<>(List.of("Piccadilly Uxbridge"))); //duplicate line - remove this one.
-    tflNetwork.addEdge(ActonTown, SouthEaling, Piccadilly, 3, "Westbound", new ArrayList<>(List.of("Piccadilly Heathrow T4", "Piccadilly Heathrow T5")));
+    tflNetwork.addEdge(ActonTown, SouthEaling, Piccadilly, 3, "Westbound", new ArrayList<>(List.of("Piccadilly Heathrow T4", "Piccadilly Heathrow T5", "Piccadilly Uxbridge")));
     tflNetwork.addEdge(SouthEaling, ActonTown, Piccadilly, 3, "Eastbound", new ArrayList<>(List.of("Piccadilly Cockfosters")));
     tflNetwork.addEdge(SouthEaling, Northfields, Piccadilly, 2, "Westbound", new ArrayList<>(List.of("Piccadilly Heathrow T4", "Piccadilly Heathrow T5")));
     tflNetwork.addEdge(Northfields, SouthEaling, Piccadilly, 2, "Eastbound", new ArrayList<>(List.of("Piccadilly Cockfosters")));
