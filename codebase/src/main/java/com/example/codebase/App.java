@@ -24,7 +24,9 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -490,12 +492,22 @@ public class App extends Application {
     gridPane.add(leaveText, 1, 0);  // Column 1, Row 0
     userInput.setMargin(gridPane, new Insets(65, 0, 0, 25));
 
+    ToggleGroup group = new ToggleGroup();
+
+    RadioButton quickestRoute = new RadioButton("Prioritise fastest route");
+    quickestRoute.setToggleGroup(group);
+    quickestRoute.getStyleClass().add("routePreference");
+
+    RadioButton leastSwitchesRoute = new RadioButton("Prioritise route with least train switches");
+    leastSwitchesRoute.setToggleGroup(group);
+    leastSwitchesRoute.getStyleClass().add("routePreference");
+
     Button submit = new Button("Find quickest route");
     submit.getStyleClass().add("planJourneyButton");
     userInput.setMargin(submit, new Insets(10, 0, 0, 20));
     Label errorLabel = new Label("");
     errorLabel.getStyleClass().add("noStationsError");
-    userInput.getChildren().addAll(title, srcStation, destStation, gridPane, submit, errorLabel);
+    userInput.getChildren().addAll(title, srcStation, destStation, gridPane, quickestRoute, leastSwitchesRoute, submit, errorLabel);
 
     // event handler for the line status button
     EventHandler<ActionEvent> lineStats = new EventHandler<ActionEvent>() {

@@ -191,6 +191,12 @@
   -fx-padding: 40 40 20 40;
 }
 
+.routePreference {
+  -fx-text-fill: white;
+  -fx-font-size: 13;
+  -fx-padding: 4 2 0 20;
+}
+
 /* ScrollPane Styling */
 .scroll-pane {
   -fx-background-color: transparent;
