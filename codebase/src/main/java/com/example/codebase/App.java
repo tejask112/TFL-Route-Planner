@@ -498,7 +498,7 @@ public class App extends Application {
     quickestRoute.setToggleGroup(group);
     quickestRoute.getStyleClass().add("routePreference");
 
-    RadioButton leastSwitchesRoute = new RadioButton("Prioritise route with least train switches");
+    RadioButton leastSwitchesRoute = new RadioButton("Prioritise route with  least train switches");
     leastSwitchesRoute.setToggleGroup(group);
     leastSwitchesRoute.getStyleClass().add("routePreference");
 
